@@ -2,7 +2,7 @@
 This is a module for Foundry VTY's Pathfinder 2e system that allows you to set multipliers for the daily rates for both Crafting and Earn Income downtime activities, to make those things go faster. Multipliers are set individually for each activity, and can be set to vary based on the proficiency level of the skill being used (so you could do something like Trained is x2, Expert is x3).
 
 ## What's It Do?
-Because there isn't a good way to hook into the system's crafting code. to modify how that works, this module is a ground-up rewrite crafting and earn income. As such, some things might be handled differently or not at all. See Known Issues below
+Because there isn't a good way to hook into the system's crafting code to modify how that works, this module is a ground-up rewrite crafting and earn income. As such, some things might be handled differently or not at all. See Known Issues below
 
 Two new macros are provided in a compendium - one for Crafting, and for Earn Income. If you want your multipliers to work, you need to use these rather than the ones that come with the system or other modules.
 
