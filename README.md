@@ -1,1 +1,2 @@
-# pf2e-downtime-crafting
+# PF2e Downtime Scaling
+This is a module for Foundry VTY's Pathfinder 2e system that allows you to set multipliers for the daily rates for both Crafting and Earn Income downtime activities. If you're using the PF2e Downtime Tracking module, a successful Crafting check will also provide the option to create a tracked activity in that module, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
