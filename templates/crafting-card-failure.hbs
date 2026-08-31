@@ -1,0 +1,25 @@
+<div class="pf2e-downtime-scaling-chat-card">
+  <div class="pf2e-downtime-scaling-chat-card-content">
+    <p>
+      <strong>{{dos}}</strong> {{dosText}}
+    </p>
+    <hr>
+    <div style="display:flex;align-items:center;margin-bottom:3px">
+      <img src="{{item.img}}" style="height:32px;width:32px;margin-right:3px">
+      <span>{{qty}} x <a class="content-link" draggable="true" data-link="" data-uuid="{{item.sourceId}}"><i class="fa-solid fa-link" inert=""></i> {{item.name}}</a></span>
+    </div>
+    {{#if critFail}}
+    <hr>
+    <p>
+      <strong>Full Cost</strong> {{cost.total}} <span style="opacity:50%">({{cost.each}} x {{qty}})</span>
+      </p>
+    <p>
+      <strong>Materials Cost</strong> {{cost.materials}}
+    </p>
+    <hr>
+    <button style="width:100%">Pay 10% of Materials Cost</button>
+    {{/if}}
+  </div>
+</div>
+
+            
