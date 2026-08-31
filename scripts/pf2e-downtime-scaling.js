@@ -7,11 +7,6 @@ Hooks.on(`init`, () => {
     // Register Settings
     registerSettings();
 
-    // Register Helpers
-    //Handlebars.registerHelper(pf2eDowntimeHelpers);
-
     // Provide the public api
     game.modules.get(MODULE).api = PF2EDowntimeScalingApi;
-
-    console.log("hello world")
 });
