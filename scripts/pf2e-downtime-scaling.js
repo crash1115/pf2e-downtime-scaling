@@ -1,4 +1,5 @@
 import { PF2EDowntimeScalingApi } from "./api/public.js";
+import { CraftingHandler } from "./crafting/CraftingHandler.js";
 import { registerSettings } from "./helpers/settings.js"
 
 export const MODULE = "pf2e-downtime-scaling";
@@ -10,3 +11,32 @@ Hooks.on(`init`, () => {
     // Provide the public api
     game.modules.get(MODULE).api = PF2EDowntimeScalingApi;
 });
+
+Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
+    const craftingTab = html.find('.tab.crafting');
+    const formulas = craftingTab.find(".known-formulas");
+    const itemRows = formulas.find(".formula-item");
+    
+    // Remove system crafting buttons
+    const systemCraftBtn = itemRows.find("button.craft");
+    systemCraftBtn.remove();
+    
+    // Add module crafting buttons
+    const itemControls = itemRows.find(".item-controls");
+    itemControls.before(`<button type="button" class="pf2e-downtime-scaling-craft-btn" data-action="pf2e-downtime-scaling-craft"><i class="fa-solid fa-hammer"></i>Craft</button>`);
+
+    // Add event listeners to module crafting buttons
+    itemRows.find("button[data-action=pf2e-downtime-scaling-craft]").on("click", async (event) => {
+        //TODO: Handle Free Crafting toggle on sheet
+        const uuid = event.currentTarget.parentElement.attributes['data-item-uuid'].value || null;
+        const qty =  event.currentTarget.previousElementSibling.children[1].valueAsNumber || 1;
+        const craftingData = {
+            item: await fromUuid(uuid),
+            qty: qty,
+            mult: game.settings.get(MODULE, "craftingMult"),
+            actor: data.actor
+        };
+        return await CraftingHandler.craftItem(craftingData);
+    });
+});
+

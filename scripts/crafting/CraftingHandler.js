@@ -3,8 +3,8 @@ import { MODULE } from "../pf2e-downtime-scaling.js";
 
 export class CraftingHandler {
     
-    static async openCraftingDialog(){
-        const actor = game.user.character ?? canvas.tokens.controlled[0]?.actor;
+    static async openCraftingDialog(defaults = {uuid: null, qty: 1, actor: null}){
+        const actor = defaults.actor ? defaults.actor : (game.user.character ?? canvas.tokens.controlled[0]?.actor);
         if(!actor){
             ui.notifications.error(`Select at least one token before rolling, or assign a default character.`)
             return;
@@ -14,15 +14,14 @@ export class CraftingHandler {
         const {createFormGroup, createNumberInput} = foundry.applications.fields;
         const content = document.createElement("div");
 
-        //TODO: Handle preselection of values
         content.append(createFormGroup({
             label: "Item to Craft",
-            input: HTMLDocumentTagsElement.create({ type: "Item", single: true,  name: "item" })
+            input: HTMLDocumentTagsElement.create({ type: "Item", single: true,  name: "item", value: defaults.uuid ?? null })
         }));
 
         content.append(createFormGroup({
             label: "Quantity",  
-            input: createNumberInput({ integer: false,  min: 0, value: 1, name: "qty" })
+            input: createNumberInput({ integer: false,  min: 0, value: defaults.qty ?? 1, name: "qty" })
         }));
 
         const mult = game.settings.get(MODULE, "craftingMult");
@@ -38,9 +37,6 @@ export class CraftingHandler {
         });
 
         if (!result) return null;
-
-        //TODO: Handle spell consumables?
-        //TODO: Handle Free Crafting toggle on sheet
 
         return {
             item: await fromUuid(result.item),
@@ -66,11 +62,12 @@ export class CraftingHandler {
             return;
         } 
 
-        //TODO: Restrict item types to physical and spells (when implemented)
         if(!item.isOfType("physical")){
             ui.notifications.error("Crafting failed: item must be a physical item.");
             return;
         }
+
+        //TODO: Handle spell consumables - wands and scrolls
 
         // Calculate DC
         const itemLevel = item.system.level.value || -1;
@@ -79,6 +76,8 @@ export class CraftingHandler {
 
         // Do the Crafting Roll
         const craftingRoll = await actor.skills.crafting.roll({dc: craftingDc});
+
+        if(!craftingRoll) return;
 
         // Calculate Degree of Success
         const dos = craftingRoll.degreeOfSuccess;
