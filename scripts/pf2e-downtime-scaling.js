@@ -27,7 +27,6 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
 
     // Add event listeners to module crafting buttons
     itemRows.find("button[data-action=pf2e-downtime-scaling-craft]").on("click", async (event) => {
-        //TODO: Handle Free Crafting toggle on sheet
         const uuid = event.currentTarget.parentElement.attributes['data-item-uuid'].value || null;
         const qty =  event.currentTarget.previousElementSibling.children[1].valueAsNumber || 1;
         const actor = data.actor;
@@ -38,7 +37,11 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
         };
         const craftingData = await CraftingHandler.openCraftingDialog(defaults);
         if(craftingData){
-            return await CraftingHandler.craftItem(craftingData);
+            const btn = craftingTab.find("button[data-action=toggle-free-crafting]");
+            const checkbox = btn.find("input")[0];
+            const freeCraftingEnabled = checkbox.checked;
+            const options = { free: freeCraftingEnabled };
+            return await CraftingHandler.craftItem(craftingData, options);
         }
     });
 });

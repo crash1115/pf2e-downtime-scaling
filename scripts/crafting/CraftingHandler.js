@@ -55,7 +55,7 @@ export class CraftingHandler {
         }
     }
 
-    static async craftItem(craftingData){
+    static async craftItem(craftingData, options = {free: false}){
         if(!craftingData){
             ui.notifications.error("Crafting failed: input not found.");
             return;
@@ -75,6 +75,23 @@ export class CraftingHandler {
             ui.notifications.error("Crafting failed: item must be a physical item.");
             return;
         }
+
+        // Handle Free Crafting
+        if(options.free){
+            // Send Chat Message
+            const chatHtml = await foundry.applications.handlebars.renderTemplate('modules/pf2e-downtime-scaling/templates/crafting-card-free.hbs', {
+                item: item,
+                qty: qty,
+                actorName: actor.name
+            });
+
+            await ChatMessage.create({
+                content: chatHtml,
+                flavor: `<b>Crafting Results</b>`,
+                speaker: ChatMessage.implementation.getSpeaker({ actor })
+            });
+            return;
+        };
 
         //TODO: Handle spell consumables - wands and scrolls
 
@@ -113,7 +130,7 @@ export class CraftingHandler {
 
             await ChatMessage.create({
                 content: chatHtml,
-                flavor: `<b>Crafting Check Results</b>`,
+                flavor: `<b>Crafting Results</b>`,
                 speaker: ChatMessage.implementation.getSpeaker({ actor })
             });
             return;
@@ -147,7 +164,7 @@ export class CraftingHandler {
 
         await ChatMessage.create({
             content: chatHtml,
-            flavor: `<b>Crafting Check Results</b>`,
+            flavor: `<b>Crafting Results</b>`,
             speaker: ChatMessage.implementation.getSpeaker({ actor })
         });
     }

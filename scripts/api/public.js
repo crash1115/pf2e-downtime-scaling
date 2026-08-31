@@ -8,7 +8,8 @@ export class PF2EDowntimeScalingApi {
     static async craft(){
         const craftingData = await CraftingHandler.openCraftingDialog();
         if(!craftingData) return;
-        return await CraftingHandler.craftItem(craftingData);
-    }
+        const options = {free: false};
+        return await CraftingHandler.craftItem(craftingData, options);
+    };
 }
 
