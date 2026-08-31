@@ -30,13 +30,16 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
         //TODO: Handle Free Crafting toggle on sheet
         const uuid = event.currentTarget.parentElement.attributes['data-item-uuid'].value || null;
         const qty =  event.currentTarget.previousElementSibling.children[1].valueAsNumber || 1;
-        const craftingData = {
-            item: await fromUuid(uuid),
+        const actor = data.actor;
+        const defaults = {
+            uuid: uuid,
             qty: qty,
-            mult: game.settings.get(MODULE, "craftingMult"),
-            actor: data.actor
+            actor: actor
         };
-        return await CraftingHandler.craftItem(craftingData);
+        const craftingData = await CraftingHandler.openCraftingDialog(defaults);
+        if(craftingData){
+            return await CraftingHandler.craftItem(craftingData);
+        }
     });
 });
 
