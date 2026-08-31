@@ -24,7 +24,16 @@ export class CraftingHandler {
             input: createNumberInput({ integer: false,  min: 0, value: defaults.qty ?? 1, name: "qty" })
         }));
 
-        const mult = game.settings.get(MODULE, "craftingMult");
+        //TODO: Handle alternate skills - the system doesn't actually do this, but it'd be nice to do.
+        const profRank = actor.skills.crafting.data.rank;
+        const profMults = {
+            "0": 1,
+            "1": game.settings.get(MODULE, "craftingMultTrained"),
+            "2": game.settings.get(MODULE, "craftingMultExpert"),
+            "3": game.settings.get(MODULE, "craftingMultMaster"),
+            "4": game.settings.get(MODULE, "craftingMultLegendary")
+        };
+        const mult = profMults[profRank];
         content.append(createFormGroup({
             label: "Speed Multiplier", 
             input: createNumberInput({integer: false, min: 0, value: mult, name: "mult" })
