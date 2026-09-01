@@ -95,7 +95,13 @@ export class CraftingHandler {
             await ChatMessage.create({
                 content: chatHtml,
                 flavor: `<b>Crafting Results</b>`,
-                speaker: ChatMessage.implementation.getSpeaker({ actor })
+                speaker: ChatMessage.implementation.getSpeaker({ actor }),
+                flags: {
+                    "pf2e-downtime-scaling": {
+                        "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
+                        "cost": {"full": null, "half": null, "tenth": null }
+                    }
+                }
             });
             return;
         };
@@ -106,7 +112,11 @@ export class CraftingHandler {
         const craftingDc = LEVEL_BASED_DC[itemLevel] + RARITY_ADJUSTMENT[itemRarity];
 
         // Do the Crafting Roll
-        const craftingRoll = await actor.skills["crafting"].roll({dc: craftingDc});
+        const craftingRoll = await actor.skills["crafting"].roll({
+            dc: craftingDc,
+            action: "craft",
+            traits: ["downtime", "manipulate"]
+        });
 
         if(!craftingRoll) return;
 
@@ -116,6 +126,7 @@ export class CraftingHandler {
         // Calculate Costs
         const price = game.pf2e.Coins.fromPrice(item.price, qty);
         const materialsCost = price.scale(0.5);
+        const critFailCost = materialsCost.scale(0.1);
 
         // Handle Failure
         if(dos < 2){
@@ -136,7 +147,13 @@ export class CraftingHandler {
             await ChatMessage.create({
                 content: chatHtml,
                 flavor: `<b>Crafting Results</b>`,
-                speaker: ChatMessage.implementation.getSpeaker({ actor })
+                speaker: ChatMessage.implementation.getSpeaker({ actor }),
+                flags: {
+                    "pf2e-downtime-scaling": {
+                        "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
+                        "cost": {"full": price, "half": materialsCost, "tenth": critFailCost }
+                    }
+                }
             });
             return;
         };
@@ -170,20 +187,29 @@ export class CraftingHandler {
         await ChatMessage.create({
             content: chatHtml,
             flavor: `<b>Crafting Results</b>`,
-            speaker: ChatMessage.implementation.getSpeaker({ actor })
+            speaker: ChatMessage.implementation.getSpeaker({ actor }),
+            flags: {
+                "pf2e-downtime-scaling": {
+                    "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
+                    "cost": {"full": price, "half": materialsCost, "tenth": critFailCost }
+                }
+            }
         });
     }
 
     static async payCost(actor, coins){
-        const payment = await actor.inventory.removeCurrency(coins);
+        const owed = new game.pf2e.Coins(coins);
+        const payment = await actor.inventory.removeCurrency(owed);
         if(!payment){
-            return ui.notifications.error(`Payment Incomplete: ${actor.name} has insufficient funds, or something went wrong.`);
+            ui.notifications.error(`Payment Incomplete: ${actor.name} has insufficient funds, or something went wrong.`);
+            return false;
         } else {
-            return ui.notifications.success(`Payment Complete: ${coins.toString()} removed from ${actor.name}.`);
+            ui.notifications.success(`Payment Complete: ${owed.toString()} removed from ${actor.name}.`);
+            return true;
         }
     }
 
-    static async giveItems(actor, item, qty){
+    static async giveItem(actor, item, qty){
         const spellItemIds = Object.keys(SPELL_CONSUMABLES);
         if(spellItemIds.includes(item.sourceId)){
             return await this.giveSpellConsumable(actor, item, qty)
@@ -194,9 +220,11 @@ export class CraftingHandler {
         const given = await actor.addToInventory(itemSrc);
 
         if(!given){
-            return ui.notifications.error(`Something went wrong: item not given to ${actor.name}.`);
+            ui.notifications.error(`Something went wrong: item not given to ${actor.name}.`);
+            return false;
         } else {
-            return ui.notifications.success(`Success: ${qty}x ${item.name}(s) given to ${actor.name}.`);
+            ui.notifications.success(`Success: ${qty}x ${item.name}(s) given to ${actor.name}.`);
+            return true;
         }
     }
 
@@ -228,14 +256,17 @@ export class CraftingHandler {
             content: content.outerHTML,
             ok: { label: "Confirm" }
         });
-        if (!dropdown) return ui.notifications.warn("Item not added to actor: no spell chosen.")
+        if (!dropdown){
+            ui.notifications.warn("Item not added to actor: no spell chosen.")
+            return false;
+        } 
         
         // Configure item data
         const spell = await fromUuid(dropdown.spell);
         const consumable = await fromUuid(item.sourceId);
         if (!consumable?.isOfType("consumable")) {
             ui.notifications.warn("Item not added to actor: failed to retrieve consumable item");
-            return;
+            return false;
         }
 
         const consumableSource = { ...consumable.toObject(), _id: null };
@@ -279,9 +310,11 @@ export class CraftingHandler {
         const itemToGive = new CONFIG.PF2E.Item.documentClasses.consumable(consumableSource);
         const given = await actor.addToInventory(itemToGive);
         if(!given){
-            return ui.notifications.error(`Something went wrong: item not given to ${actor.name}.`);
+            ui.notifications.error(`Something went wrong: item not given to ${actor.name}.`);
+            return false;
         } else {
-            return ui.notifications.success(`Success: ${qty}x ${itemToGive.name} given to ${actor.name}.`);
+            ui.notifications.success(`Success: ${qty}x ${itemToGive.name} given to ${actor.name}.`);
+            return true;
         }
     }
 }

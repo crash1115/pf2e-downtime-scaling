@@ -46,3 +46,61 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
     });
 });
 
+Hooks.on("renderChatMessageHTML", async (message, html, context) => {
+    if(message.flags[MODULE]){
+        const craftingData = message.flags[MODULE].context;
+        const cost = message.flags[MODULE].cost;
+        const actor = await game.actors.get(craftingData.actorId);
+        const item = await fromUuid(craftingData.itemUuid);
+        
+        const payTenthBtn = html.querySelector("button[data-action=pay-tenth]");
+        if(payTenthBtn){
+            payTenthBtn.addEventListener("click", async () => {
+                const owed = cost.tenth;
+                const payment = await CraftingHandler.payCost(actor, owed);
+                return payment;
+            })
+        }
+
+        const payFullBtn = html.querySelector("button[data-action=pay-full]");
+        if(payFullBtn){
+            payFullBtn.addEventListener("click", async () => {
+                const owed = cost.full;
+                const payment = await CraftingHandler.payCost(actor, owed);
+                if(!payment) return;
+                const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
+                return given;
+            })
+        }
+        
+        const payHalfBtn = html.querySelector("button[data-action=pay-half]");
+        if(payHalfBtn){
+            payHalfBtn.addEventListener("click", async () => {
+                const owed = cost.half;
+                const payment = await CraftingHandler.payCost(actor, owed);
+                if(!payment) return;
+                const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
+                return given;
+            })
+        }
+
+        const createProjectBtn = html.querySelector("button[data-action=create-project]");
+        if(createProjectBtn){
+            createProjectBtn.addEventListener("click", async () => {
+                const owed = cost.half;
+                const payment = await CraftingHandler.payCost(actor, owed);
+                if(!payment) return;
+                // todo: add project
+                return console.log("adding downtime project")
+            })
+        }
+        
+        const getItemsBtn = html.querySelector("button[data-action=get-items]");
+        if(getItemsBtn){
+            getItemsBtn.addEventListener("click", async () => {
+                const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
+                return given;
+            })
+        }
+    }
+});

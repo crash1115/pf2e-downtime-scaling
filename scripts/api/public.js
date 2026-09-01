@@ -11,8 +11,8 @@ export class PF2EDowntimeScalingApi {
         return await CraftingHandler.payCost(actor, coins);
     };
 
-    static async giveItems(actor, item, qty){
-        return await CraftingHandler.giveItems(actor, item, qty);
+    static async giveItem(actor, item, qty){
+        return await CraftingHandler.giveItem(actor, item, qty);
     };
 
 }
