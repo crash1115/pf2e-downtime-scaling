@@ -17,3 +17,33 @@ Any module that replaces or makes changes to the crafting workflow will not bene
 Because there isn't a good way to hook into the system's crafting code to modify how that works, this module is a ground-up rewrite of those features. As such, some things might be handled differently, poorly, or not at all.
 - There's currently no handling for spell-based consumable items like scrolls and wands.
 - Occasionally you'll get a very minor rounding error when looking at costs or earnings. This is due to how the system handles scaling currency; I can't do anything about this.
+
+## API
+
+Foundry recommends modules expose their API in a specific way, so I did that. You can access the API like so:
+```js
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+```
+
+To craft an item using this module's code rather than the base system code:
+```js
+const item = game.items.getName("Longsword");
+const actor = game.actors.getName("My Actor");
+const options = {
+    actor: actor,  // The actor doing the crafting
+    item: item,  // The item to craft
+    qty: 4,  // The quantity you want to craft
+    mult: 99,  // The speed multiplier for the crafting
+    free: false  // When true, no crafting check is made, and materials cost nothing
+}
+
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+await api.craft(options); // My Actor will craft 4 Longswords, with a speed multiplier of 99
+```
+Each key in `options` is optional. Not providing them will fall back to module defaults:
+- Actor falls back to a selected token or assigned character.
+- Item falls back to null, allowing user selection in the crafting window.
+- Quantity falls back to 1.
+- Mult's fallback will be determined based on the module's settings and the actor's proficiency.
+- Free falls back to `false`
+

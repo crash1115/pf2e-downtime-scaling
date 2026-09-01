@@ -2,9 +2,16 @@ import { LEVEL_BASED_DC, RARITY_ADJUSTMENT, PROFICENCIES, EI_TABLE, DEGREE_NAME,
 import { MODULE } from "../pf2e-downtime-scaling.js";
 
 export class CraftingHandler {
-    
-    static async openCraftingDialog(defaults = {uuid: null, qty: 1, actor: null}){
-        const actor = defaults.actor ? defaults.actor : (game.user.character ?? canvas.tokens.controlled[0]?.actor);
+    static defaultOptions = {
+        item: null,
+        qty: 1,
+        mult: null,
+        actor: null
+    };
+
+    static async openCraftingDialog(options = defaultOptions){
+        options = {...CraftingHandler.defaultOptions, ...options};
+        const actor = options.actor ? options.actor : (game.user.character ?? canvas.tokens.controlled[0]?.actor);
         if(!actor){
             ui.notifications.error(`Select at least one token before rolling, or assign a default character.`)
             return;
@@ -16,16 +23,16 @@ export class CraftingHandler {
 
         content.append(createFormGroup({
             label: "Item to Craft",
-            input: HTMLDocumentTagsElement.create({ type: "Item", single: true,  name: "item", value: defaults.uuid ?? null })
+            input: HTMLDocumentTagsElement.create({ type: "Item", single: true,  name: "item", value: options.item.uuid ?? null })
         }));
 
         content.append(createFormGroup({
             label: "Quantity",  
-            input: createNumberInput({ integer: false,  min: 0, value: defaults.qty ?? 1, name: "qty" })
+            input: createNumberInput({ integer: false,  min: 0, value: options.qty ?? 1, name: "qty" })
         }));
 
-        //TODO: Handle alternate skills - the system doesn't actually do this, but it'd be nice to do.
-        const profRank = actor.skills.crafting.data.rank;
+
+        const profRank = actor.skills["crafting"].data.rank;
         const profMults = {
             "0": 1,
             "1": game.settings.get(MODULE, "craftingMultTrained"),
@@ -33,7 +40,7 @@ export class CraftingHandler {
             "3": game.settings.get(MODULE, "craftingMultMaster"),
             "4": game.settings.get(MODULE, "craftingMultLegendary")
         };
-        const mult = profMults[profRank];
+        const mult = options.mult || profMults[profRank];
         content.append(createFormGroup({
             label: "Speed Multiplier", 
             input: createNumberInput({integer: false, min: 0, value: mult, name: "mult" })
@@ -99,7 +106,7 @@ export class CraftingHandler {
         const craftingDc = LEVEL_BASED_DC[itemLevel] + RARITY_ADJUSTMENT[itemRarity];
 
         // Do the Crafting Roll
-        const craftingRoll = await actor.skills.crafting.roll({dc: craftingDc});
+        const craftingRoll = await actor.skills["crafting"].roll({dc: craftingDc});
 
         if(!craftingRoll) return;
 
@@ -135,7 +142,7 @@ export class CraftingHandler {
         };
 
         // Calculate Progress Per Day
-        const craftingProf = PROFICENCIES[actor.skills.crafting.data.rank];
+        const craftingProf = PROFICENCIES[actor.skills["crafting"].data.rank];
         const eiPerDay = dos === 3 ? EI_TABLE[actor.level + 1][craftingProf] : EI_TABLE[actor.level][craftingProf];
         const coinsEiPerDay = new game.pf2e.Coins(eiPerDay);
         const progressPerDay = coinsEiPerDay.scale(mult);

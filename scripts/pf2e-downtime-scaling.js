@@ -30,12 +30,12 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
         const uuid = event.currentTarget.parentElement.attributes['data-item-uuid'].value || null;
         const qty =  event.currentTarget.previousElementSibling.children[1].valueAsNumber || 1;
         const actor = data.actor;
-        const defaults = {
-            uuid: uuid,
+        const options = {
+            item: await fromUuid(uuid),
             qty: qty,
             actor: actor
         };
-        const craftingData = await CraftingHandler.openCraftingDialog(defaults);
+        const craftingData = await CraftingHandler.openCraftingDialog(options);
         if(craftingData){
             const btn = craftingTab.find("button[data-action=toggle-free-crafting]");
             const checkbox = btn.find("input")[0];
