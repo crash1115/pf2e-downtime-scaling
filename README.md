@@ -41,9 +41,8 @@ const api = game.modules.get('pf2e-downtime-scaling')?.api;
 await api.craft(options); // My Actor will craft 4 Longswords, with a speed multiplier of 99
 ```
 Each key in `options` is optional. Not providing them will fall back to module defaults:
-- Actor falls back to a selected token or assigned character.
-- Item falls back to null, allowing user selection in the crafting window.
-- Quantity falls back to 1.
-- Mult's fallback will be determined based on the module's settings and the actor's proficiency.
-- Free falls back to `false`
-
+- `actor` falls back to a selected token or assigned character.
+- `item` falls back to null, allowing user selection in the crafting window.
+- `qty` falls back to 1.
+- `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
+- `free` falls back to `false`
