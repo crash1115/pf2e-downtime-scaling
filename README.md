@@ -46,3 +46,9 @@ Each key in `options` is optional. Not providing them will fall back to module d
 - `qty` falls back to 1.
 - `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
 - `free` falls back to `false`
+
+Not providing `options` at all, or providing an empty object, will use the defaults for everything:
+```js
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+await api.craft(); // Will open the crafting dialog with defaults selected
+```
