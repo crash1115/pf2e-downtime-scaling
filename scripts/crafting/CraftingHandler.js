@@ -1,4 +1,4 @@
-import { LEVEL_BASED_DC, RARITY_ADJUSTMENT, PROFICENCIES, EI_TABLE, DEGREE_NAME, CRAFTING_DOS_TEXT } from "../helpers/constants.js";
+import { LEVEL_BASED_DC, RARITY_ADJUSTMENT, PROFICENCIES, EI_TABLE, DEGREE_NAME, CRAFTING_DOS_TEXT, SPELL_CONSUMABLES, TRADITIONS } from "../helpers/constants.js";
 import { MODULE } from "../pf2e-downtime-scaling.js";
 
 export class CraftingHandler {
@@ -93,8 +93,6 @@ export class CraftingHandler {
             return;
         };
 
-        //TODO: Handle spell consumables - wands and scrolls
-
         // Calculate DC
         const itemLevel = item.system.level.value || -1;
         const itemRarity = item.system.traits.rarity || "common";
@@ -167,5 +165,116 @@ export class CraftingHandler {
             flavor: `<b>Crafting Results</b>`,
             speaker: ChatMessage.implementation.getSpeaker({ actor })
         });
+    }
+
+    static async payCost(actor, coins){
+        const payment = await actor.inventory.removeCurrency(coins);
+        if(!payment){
+            return ui.notifications.error(`Payment Incomplete: ${actor.name} has insufficient funds, or something went wrong.`);
+        } else {
+            return ui.notifications.success(`Payment Complete: ${coins.toString()} removed from ${actor.name}.`);
+        }
+    }
+
+    static async giveItems(actor, item, qty){
+        const spellItemIds = Object.keys(SPELL_CONSUMABLES);
+        if(spellItemIds.includes(item.sourceId)){
+            return await this.giveSpellConsumable(actor, item, qty)
+        }
+
+        const itemSrc = { ...item.toObject()};
+        itemSrc.system.quantity = qty;
+        const given = await actor.addToInventory(itemSrc);
+
+        if(!given){
+            return ui.notifications.error(`Something went wrong: item not given to ${actor.name}.`);
+        } else {
+            return ui.notifications.success(`Success: ${qty}x ${item.name}(s) given to ${actor.name}.`);
+        }
+    }
+
+    static async giveSpellConsumable(actor, item, qty){
+        // This code is adapted from the PF2e system
+        // https://github.com/foundryvtt/pf2e/blob/v14-dev/src/module/actor/character/crafting/helpers.ts#L110
+        const rank = SPELL_CONSUMABLES[item.sourceId].rank;
+        const type = SPELL_CONSUMABLES[item.sourceId].type;
+
+        // Get possible spells
+        const allSpells = await game.packs.get("pf2e.spells-srd").getDocuments();
+        const filtered = allSpells.filter(s => s.system.level.value <= rank  && !s.isCantrip && !s.isRitual && !s.isFocusSpell);
+        const spellOptions = filtered.map(t => ({ value: t.uuid, label: t.name })); 
+
+        // Create spell selection dialog
+        const { createSelectInput, createFormGroup } = foundry.applications.fields;
+        const content = document.createElement("div");
+        content.append(createFormGroup({
+            label: "Select Spell",
+            input: createSelectInput({
+                options: spellOptions,
+                name: "spell",
+                sort: true,
+            })
+        }));
+
+        const dropdown = await foundry.applications.api.DialogV2.input({
+            window: { title: "Spell Consumable Spell Selection" },
+            content: content.outerHTML,
+            ok: { label: "Confirm" }
+        });
+        if (!dropdown) return ui.notifications.warn("Item not added to actor: no spell chosen.")
+        
+        // Configure item data
+        const spell = await fromUuid(dropdown.spell);
+        const consumable = await fromUuid(item.sourceId);
+        if (!consumable?.isOfType("consumable")) {
+            ui.notifications.warn("Item not added to actor: failed to retrieve consumable item");
+            return;
+        }
+
+        const consumableSource = { ...consumable.toObject(), _id: null };
+        
+        const traits = consumableSource.system.traits;
+        traits.value = traits.value.concat(spell.system.traits.value);
+        traits.rarity = spell.rarity;
+        if (traits.value.includes("magical") && traits.value.some((t) => TRADITIONS.includes(t))) {
+            traits.value.splice(traits.value.indexOf("magical"), 1);
+        }
+        traits.value.sort();
+
+        const name = `${type} of ${spell.name} (Rank ${rank})`;
+        const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+        consumableSource.name = formattedName;
+        
+        const description = consumableSource.system.description.value;
+        consumableSource.system.description.value = (() => {
+            const paragraphElement = document.createElement("p");
+            paragraphElement.append(spell.sourceId ? `@UUID[${spell.sourceId}]{${spell.name}}` : spell.description);
+
+            const containerElement = document.createElement("div");
+            const hrElement = document.createElement("hr");
+            containerElement.append(paragraphElement, hrElement);
+            hrElement.insertAdjacentHTML("afterend", description);
+
+            return containerElement.innerHTML;
+        })();
+
+        consumableSource.system.spell = foundry.utils.mergeObject(
+            spell._source,
+            { _id: foundry.utils.randomID(), system: { location: { value: null, heightenedLevel: rank } } },
+            { inplace: false },
+        );
+       
+        consumableSource.system.quantity = qty;
+        
+        consumableSource.system.size = actor.size === "tiny" ? "tiny" : "med";
+
+        // Give item to actor
+        const itemToGive = new CONFIG.PF2E.Item.documentClasses.consumable(consumableSource);
+        const given = await actor.addToInventory(itemToGive);
+        if(!given){
+            return ui.notifications.error(`Something went wrong: item not given to ${actor.name}.`);
+        } else {
+            return ui.notifications.success(`Success: ${qty}x ${itemToGive.name} given to ${actor.name}.`);
+        }
     }
 }

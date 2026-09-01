@@ -42,3 +42,27 @@ export const CRAFTING_DOS_TEXT = {
     "2":"Your attempt is successful. Each additional day spent Crafting reduces the materials needed to complete the item by an amount based on your level and your proficiency rank.", 
     "3":"Your attempt is successful. Each additional day spent Crafting reduces the materials needed to complete the item by an amount based on your level + 1 and your proficiency rank in Crafting."
 }
+
+export const SPELL_CONSUMABLES = {
+    "Compendium.pf2e.equipment-srd.Item.RjuupS9xyXDLgyIr": {"type": "scroll", "rank": 1},
+    "Compendium.pf2e.equipment-srd.Item.Y7UD64foDbDMV9sx": {"type": "scroll", "rank": 2},
+    "Compendium.pf2e.equipment-srd.Item.ZmefGBXGJF3CFDbn": {"type": "scroll", "rank": 3},
+    "Compendium.pf2e.equipment-srd.Item.QSQZJ5BC3DeHv153": {"type": "scroll", "rank": 4},
+    "Compendium.pf2e.equipment-srd.Item.tjLvRWklAylFhBHQ": {"type": "scroll", "rank": 5},
+    "Compendium.pf2e.equipment-srd.Item.4sGIy77COooxhQuC": {"type": "scroll", "rank": 6},
+    "Compendium.pf2e.equipment-srd.Item.fomEZZ4MxVVK3uVu": {"type": "scroll", "rank": 7},
+    "Compendium.pf2e.equipment-srd.Item.iPki3yuoucnj7bIt": {"type": "scroll", "rank": 8},
+    "Compendium.pf2e.equipment-srd.Item.cFHomF3tty8Wi1e5": {"type": "scroll", "rank": 9},
+    "Compendium.pf2e.equipment-srd.Item.o1XIHJ4MJyroAHfF": {"type": "scroll", "rank": 10},
+    "Compendium.pf2e.equipment-srd.Item.wrDmWkGxmwzYtfiA": {"type": "wand", "rank": 3},
+    "Compendium.pf2e.equipment-srd.Item.UJWiN0K3jqVjxvKk": {"type": "wand", "rank": 1},
+    "Compendium.pf2e.equipment-srd.Item.vJZ49cgi8szuQXAD": {"type": "wand", "rank": 2},
+    "Compendium.pf2e.equipment-srd.Item.Sn7v9SsbEDMUIwrO": {"type": "wand", "rank": 4},
+    "Compendium.pf2e.equipment-srd.Item.5BF7zMnrPYzyigCs": {"type": "wand", "rank": 5},
+    "Compendium.pf2e.equipment-srd.Item.kiXh4SUWKr166ZeM": {"type": "wand", "rank": 6},
+    "Compendium.pf2e.equipment-srd.Item.nmXPj9zuMRQBNT60": {"type": "wand", "rank": 7},
+    "Compendium.pf2e.equipment-srd.Item.Qs8RgNH6thRPv2jt": {"type": "wand", "rank": 8},
+    "Compendium.pf2e.equipment-srd.Item.Fgv722039TVM5JTc": {"type": "wand", "rank": 9}
+};
+
+export const TRADITIONS = ["arcane", "divine", "occult", "primal"];
