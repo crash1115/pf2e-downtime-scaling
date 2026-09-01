@@ -9,9 +9,9 @@ export class CraftingHandler {
         actor: null
     };
 
-    static async openCraftingDialog(options = defaultOptions){
+    static async openCraftingDialog(options = this.defaultOptions){
         options = {...CraftingHandler.defaultOptions, ...options};
-        const actor = options.actor ? options.actor : (game.user.character ?? canvas.tokens.controlled[0]?.actor);
+        const actor = options.actor ? options.actor : (canvas.tokens.controlled[0]?.actor ?? game.user.character);
         if(!actor){
             ui.notifications.error(`Select at least one token before rolling, or assign a default character.`)
             return;
@@ -23,7 +23,7 @@ export class CraftingHandler {
 
         content.append(createFormGroup({
             label: "Item to Craft",
-            input: HTMLDocumentTagsElement.create({ type: "Item", single: true,  name: "item", value: options.item.uuid ?? null })
+            input: HTMLDocumentTagsElement.create({ type: "Item", single: true,  name: "item", value: options.item?.uuid ?? null })
         }));
 
         content.append(createFormGroup({
