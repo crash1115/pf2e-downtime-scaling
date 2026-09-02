@@ -98,8 +98,20 @@ export class CraftingHandler {
                 speaker: ChatMessage.implementation.getSpeaker({ actor }),
                 flags: {
                     "pf2e-downtime-scaling": {
-                        "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
-                        "cost": {"full": null, "half": null, "tenth": null },
+                        "context": { 
+                            itemUuid: item.uuid,
+                            qty: qty,
+                            mult: mult,
+                            actorId: actor.id,
+                            skill: "crafting",
+                            free: options.free,
+                            cost: {
+                                full: null,
+                                half: null,
+                                tenth: null
+                            },
+                            perDay: null
+                        },
                         "rollMsgId": null
                     }
                 }
@@ -155,8 +167,20 @@ export class CraftingHandler {
                 speaker: ChatMessage.implementation.getSpeaker({ actor }),
                 flags: {
                     "pf2e-downtime-scaling": {
-                        "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
-                        "cost": {"full": price, "half": materialsCost, "tenth": critFailCost },
+                        "context": { 
+                            itemUuid: item.uuid,
+                            qty: qty,
+                            mult: mult,
+                            actorId: actor.id,
+                            skill: "crafting",
+                            free: options.free,
+                            cost: {
+                                full: price,
+                                half: materialsCost,
+                                tenth: critFailCost
+                            },
+                            perDay: null
+                        },
                         "rollMsgId": craftingRollMsg.id
                     }
                 }
@@ -197,8 +221,20 @@ export class CraftingHandler {
             speaker: ChatMessage.implementation.getSpeaker({ actor }),
             flags: {
                 "pf2e-downtime-scaling": {
-                    "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
-                    "cost": {"full": price, "half": materialsCost, "tenth": critFailCost },
+                    "context": { 
+                        itemUuid: item.uuid,
+                        qty: qty,
+                        mult: mult,
+                        actorId: actor.id,
+                        skill: "crafting",
+                        free: options.free,
+                        cost: {
+                            full: price,
+                            half: materialsCost,
+                            tenth: critFailCost
+                        },
+                        perDay: progressPerDay
+                    },
                     "rollMsgId": craftingRollMsg.id
                 }
             }
@@ -255,7 +291,7 @@ export class CraftingHandler {
             input: createSelectInput({
                 options: spellOptions,
                 name: "spell",
-                sort: true,
+                sort: true
             })
         }));
 
@@ -322,6 +358,45 @@ export class CraftingHandler {
             return false;
         } else {
             ui.notifications.success(`Success: ${qty}x ${itemToGive.name} given to ${actor.name}.`);
+            return true;
+        }
+    }
+
+    static async createDowntimeProject(craftingData){
+        const actor = await game.actors.get(craftingData.actorId);
+        const item = await fromUuid(craftingData.itemUuid)
+        const projectName = `Craft ${craftingData.qty}x ${item.name}`;
+        const goldMax = new game.pf2e.Coins(craftingData.cost.full).goldValue;
+        const goldCurrent = new game.pf2e.Coins(craftingData.cost.half).goldValue;
+        const goldPerDay = new game.pf2e.Coins(craftingData.perDay).goldValue;
+        
+        const project =   {
+            id: foundry.utils.randomID(),
+            owner: actor.id,
+            name: projectName,
+            img: "icons/commodities/tech/blueprint.webp",
+            category: "Crafting Projects",
+            progress: {
+                current: goldCurrent,
+                max: goldMax,
+                label: "gp",
+                perDay: goldPerDay
+            },
+            note: "Project created by the PF2e Downtime Enhancements module.",
+            playerCanEdit: true,
+            playerCanView: true,
+            disableSpend: false
+        };
+
+        const api = game.modules.get('pf2e-downtime')?.api;
+        const allProjects = api.getAllProjectsForActor(actor.id);
+        allProjects.push(project);
+        const projectAdded = await actor.setFlag("pf2e-downtime", "projects", allProjects);
+        if(!projectAdded){
+            ui.notifications.error(`Project Creation Failed: something went wrong.`);
+            return false;
+        } else {
+            ui.notifications.success(`Project Created: New crafting downtime project added to ${actor.name}.`);
             return true;
         }
     }

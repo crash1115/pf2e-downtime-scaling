@@ -49,7 +49,7 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
 Hooks.on("renderChatMessageHTML", async (message, html, context) => {
     if(message.flags[MODULE]){
         const craftingData = message.flags[MODULE].context;
-        const cost = message.flags[MODULE].cost;
+        const cost = craftingData.cost;
         const actor = await game.actors.get(craftingData.actorId);
         const item = await fromUuid(craftingData.itemUuid);
         
@@ -90,8 +90,8 @@ Hooks.on("renderChatMessageHTML", async (message, html, context) => {
                 const owed = cost.half;
                 const payment = await CraftingHandler.payCost(actor, owed);
                 if(!payment) return;
-                // todo: add project
-                return console.log("adding downtime project")
+                const project = await CraftingHandler.createDowntimeProject(craftingData);
+                return project;
             })
         }
         
