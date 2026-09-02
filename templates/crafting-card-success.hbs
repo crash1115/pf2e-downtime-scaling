@@ -28,7 +28,10 @@
     <hr>
     <button style="width:100%; margin-bottom: 3px;" data-action="pay-full">Pay Full Cost and Get Items</button>
     <button style="width:100%; margin-bottom: 3px;" data-action="pay-half">Pay Materials Cost and Get Items</button>
+    
+    {{#if trackerIntegration}}
     <button style="width:100%" data-action="create-project">Pay Materials and Add Downtime Project</button>
+    {{/if}}
     </div>
 </div>
 

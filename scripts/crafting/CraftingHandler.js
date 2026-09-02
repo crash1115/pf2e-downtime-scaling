@@ -187,7 +187,8 @@ export class CraftingHandler {
             mult: mult,
             progressPerDay: progressPerDay.toString(),
             eiPerDay: coinsEiPerDay.toString(),
-            days: daysToComplete
+            days: daysToComplete,
+            trackerIntegration: game.settings.get(MODULE, "trackerIntegration")
         });
 
         await ChatMessage.create({
