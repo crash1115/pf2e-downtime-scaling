@@ -99,7 +99,8 @@ export class CraftingHandler {
                 flags: {
                     "pf2e-downtime-scaling": {
                         "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
-                        "cost": {"full": null, "half": null, "tenth": null }
+                        "cost": {"full": null, "half": null, "tenth": null },
+                        "rollMsgId": null
                     }
                 }
             });
@@ -112,10 +113,14 @@ export class CraftingHandler {
         const craftingDc = LEVEL_BASED_DC[itemLevel] + RARITY_ADJUSTMENT[itemRarity];
 
         // Do the Crafting Roll
+        let craftingRollMsg;
         const craftingRoll = await actor.skills["crafting"].roll({
             dc: craftingDc,
             action: "craft",
-            traits: ["downtime", "manipulate"]
+            traits: ["downtime", "manipulate"],
+            callback: async (roll, outcome, message, event) => {
+                craftingRollMsg = message;
+            }
         });
 
         if(!craftingRoll) return;
@@ -141,7 +146,7 @@ export class CraftingHandler {
                     each: item.price.value.toString(),
                     materials: materialsCost.toString()
                 },
-              critFail: dos === 0
+                critFail: dos === 0
             });
 
             await ChatMessage.create({
@@ -151,7 +156,8 @@ export class CraftingHandler {
                 flags: {
                     "pf2e-downtime-scaling": {
                         "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
-                        "cost": {"full": price, "half": materialsCost, "tenth": critFailCost }
+                        "cost": {"full": price, "half": materialsCost, "tenth": critFailCost },
+                        "rollMsgId": craftingRollMsg.id
                     }
                 }
             });
@@ -191,7 +197,8 @@ export class CraftingHandler {
             flags: {
                 "pf2e-downtime-scaling": {
                     "context": { itemUuid: item.uuid, qty: qty, mult: mult,  actorId: actor.id,  skill: "crafting", free: options.free },
-                    "cost": {"full": price, "half": materialsCost, "tenth": critFailCost }
+                    "cost": {"full": price, "half": materialsCost, "tenth": critFailCost },
+                    "rollMsgId": craftingRollMsg.id
                 }
             }
         });
