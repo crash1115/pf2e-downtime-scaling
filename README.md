@@ -1,5 +1,10 @@
 # PF2e Downtime Enhancements
-This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhancements for Earn Income and Crafting downtime activities.
+This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhancements for the Earn Income and Crafting downtime activities. Keep reading for a full list of features.
+
+This module is based on the default crafting rules presented in Player Core. There's no additional support here for the Complex Crafting or Critical Crafting rules in Treasure Vault.
+
+### Default Behaviors
+This module replaces the default behavior of the `CRAFT` buttons on a PC's sheet, rendering the system's base crafting implementation unusable from that location. If you need the system implementation of crafting for any reason, you can still access that through the system provided macros (`Craft: Crafting` can be found in the Action Macros folder, and `Earn Income` can be found in the PF2e Macros folder).
 
 ## Speed Multipliers
 Set multipliers for the daily rates for both Crafting and Earn Income downtime activities, to make those things go faster. Multipliers are set individually for each activity, and can be set to vary based on the proficiency level of the skill being used (so you could do something like Trained is x2, Expert is x3, etc). These multipliers are used as defaults for the appropriate actions, but can be overridden on a case by case basis.
@@ -20,7 +25,7 @@ https://github.com/user-attachments/assets/b58f1391-b6b3-4618-b991-2b1e7147b76e
 Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
 
 ## Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime)
-A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "days", you'll see an option to pay the materials cost, spend downtime, and receive the item. Regardless of your downtime unit settings, you'll see an option to create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
+A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "day", you'll see an option to spend the materials cost and create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
 
 <img width="1697" height="799" alt="image" src="https://github.com/user-attachments/assets/a61f892b-d6c6-4c60-b2d7-103e1c0b3f18" />
 
