@@ -36,7 +36,7 @@ const options = {
     qty: 4,  // The quantity you want to craft
     mult: 99,  // The speed multiplier for the crafting
     free: false,  // When true, no crafting check is made, and materials cost nothing,
-    dos: null // When set, skips the check and provides the given result. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
+    dos: null // When set, skips the check and provides a result of the given Degree of Success. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
 }
 
 const api = game.modules.get('pf2e-downtime-scaling')?.api;
