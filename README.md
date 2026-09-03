@@ -13,9 +13,13 @@ This is a module for Foundry VTT's Pathfinder 2e system that provides a few enha
 **Craft with Other Skills.** Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
 
 **Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime).** A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "days", you'll see an option to pay the materials cost, spend downtime, and receive the item. Regardless of your downtime unit settings, you'll see an option to create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
+<img width="1697" height="799" alt="image" src="https://github.com/user-attachments/assets/a61f892b-d6c6-4c60-b2d7-103e1c0b3f18" />
+
 
 ## Module Compatibility
 Any module that replaces or makes changes to the crafting workflow will not benefit from the changes this module provides. This includes stuff like Heroic Crafting and the associated automation module.
+
+This module requires [libwrapper](https://foundryvtt.com/packages/lib-wrapper/).
 
 ## Known Issues
 Because there isn't a good way to hook into the system's crafting code to modify how that works, this module is a ground-up rewrite of those features. As such, some things might be handled differently, poorly, or not at all.
