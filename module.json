@@ -1,44 +1,51 @@
 {
   "id": "pf2e-downtime-scaling",
   "title": "PF2e Downtime Enhancements",
+  "description": "Improvements for crafting and earn income. Add multipliers for the speed of crafting or results of earn income. An improved crafting workflow that handles magical consumables like scrolls and allows crafting with other skills. Rerolls that work as you expect and update the results messages. Integration with PF2e Downtime Tracking to keep track of longer crafting projects.",
   "version": "0.14.0",
   "download": "https://github.com/crash1115/pf2e-downtime-scaling/releases/download/0.14.0/module.zip",
   "manifest": "https://github.com/crash1115/pf2e-downtime-scaling/releases/latest/download/module.json",
   "url": "https://github.com/crash1115/pf2e-downtime",
   "compatibility": {
-      "minimum": "14",
-      "verified": "14"
+        "minimum": "14",
+        "verified": "14"
   },
   "relationships": {
-      "systems": [
-          {
-              "id": "pf2e",
-              "type": "system",
-              "compatibility": {}
-          }
-      ]
+        "systems": [
+            {
+                "id": "pf2e",
+                "type": "system",
+                "compatibility": {}
+            }
+        ],
+        "requires": [
+            {
+                "id": "lib-wrapper",
+                "type": "module"
+            }
+        ]
   },
   "authors": [
-      {
-          "name": "CRASH1115",
-          "url": "https://github.com/crash1115",
-          "discord": "crash1115",
-          "flags": {}
-      }
+        {
+            "name": "CRASH1115",
+            "url": "https://github.com/crash1115",
+            "discord": "crash1115",
+            "flags": {}
+        }
   ],
   "esmodules": [
-      "./scripts/pf2e-downtime-scaling.js"
+        "./scripts/pf2e-downtime-scaling.js"
   ],
   "styles": [
-      "./styles/pf2e-downtime-scaling.css"
+        "./styles/pf2e-downtime-scaling.css"
   ],
   "flags": {
-      "hotReload": {
-          "extensions": [
-              "hbs",
-              "html",
-              "css"
-          ]
-      }
-  }
+        "hotReload": {
+            "extensions": [
+                "hbs",
+                "html",
+                "css"
+            ]
+        }
+    }
 }
