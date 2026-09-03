@@ -400,4 +400,17 @@ export class CraftingHandler {
             return true;
         }
     }
+
+    static async createRerollChatMsg(oldMsgId, newRoll){
+        //TODO: actuall make this function make something pretty
+        const oldMsg = game.messages.get(oldMsgId)
+        const context = oldMsg.flags[MODULE].context;
+        console.log(context);
+        await oldMsg.delete();
+
+        await ChatMessage.create({
+            content: JSON.stringify(context),
+            flavor: `<b>Crafting Results</b>`
+        });
+    }
 }

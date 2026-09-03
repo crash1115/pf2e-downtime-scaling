@@ -104,3 +104,58 @@ Hooks.on("renderChatMessageHTML", async (message, html, context) => {
         }
     }
 });
+
+
+let savedOldRoll, savedNewRoll, savedResultsMsgId;
+
+Hooks.once("ready", () => {
+    libWrapper.register(
+        MODULE,
+        "game.pf2e.Check.rerollFromMessage",
+        function (wrapped, ...args) {
+            const message = args[0];
+            const craftingMsgs = game.messages.filter(m => m.flags[MODULE]?.rollMsgId === message.id);
+            if(craftingMsgs.length > 0){
+                savedOldRoll = foundry.utils.deepClone(message.rolls[0]);
+                savedResultsMsgId = craftingMsgs[0].id;
+            }
+            return wrapped(...args);
+        },
+        "WRAPPER"
+    );
+
+    libWrapper.register(
+        MODULE,
+        "Roll.prototype.toMessage",
+        function (wrapped, ...args) {
+            if (compareRolls(this, savedNewRoll)){
+                CraftingHandler.createRerollChatMsg(savedResultsMsgId, this)
+                savedOldRoll = undefined;
+                savedNewRoll = undefined;
+                savedResultsMsgId = undefined;
+            }
+            return wrapped(...args);
+        },
+        "WRAPPER"
+    );
+});
+
+Hooks.on("pf2e.reroll", (oldRoll, newRoll, resource, options) => {
+    if( compareRolls(oldRoll, savedOldRoll) ){
+        savedNewRoll = foundry.utils.deepClone(newRoll)
+    }    
+});
+
+function compareRolls (rollA, rollB){
+    if(!rollA || !rollB) return false
+    // copy a and b, but remove isReroll and isRerollable
+    let modA = JSON.parse(JSON.stringify(rollA));
+    delete modA.isReroll;
+    delete modA.isRerollable;
+    const modB = JSON.parse(JSON.stringify(rollA));
+    delete modB.isReroll;
+    delete modB.isRerollable;
+
+    const sameWithoutRerolls = JSON.stringify(modA) == JSON.stringify(modB);
+    return sameWithoutRerolls;
+}
