@@ -23,7 +23,7 @@ https://github.com/user-attachments/assets/b58f1391-b6b3-4618-b991-2b1e7147b76e
 Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
 
 ## Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime)
-A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "days", you'll see an option to pay the materials cost, spend downtime, and receive the item. Regardless of your downtime unit settings, you'll see an option to create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
+A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "day", you'll see an option to spend the materials cost and create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
 
 <img width="1697" height="799" alt="image" src="https://github.com/user-attachments/assets/a61f892b-d6c6-4c60-b2d7-103e1c0b3f18" />
 
