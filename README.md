@@ -4,6 +4,8 @@ This is a module for Foundry VTT's Pathfinder 2e system that provides a few enha
 ## Features
 **Speed Multipliers.** Set multipliers for the daily rates for both Crafting and Earn Income downtime activities, to make those things go faster. Multipliers are set individually for each activity, and can be set to vary based on the proficiency level of the skill being used (so you could do something like Trained is x2, Expert is x3, etc). These multipliers are used as defaults for the appropriate actions, but can be overridden on a case by case basis.
 
+<img width="1412" height="789" alt="image" src="https://github.com/user-attachments/assets/691bff58-46fa-48d1-8416-c9897bbfdc0d" />
+
 **Magical Consumable Crafting.** When you successfully craft a wand or scroll, clicking the button in the chat card to add the items to your sheet will let you select the spell for the item you crafted. It'll then add that specific scroll or wand to your inventory, rather than a generic one.
 
 https://github.com/user-attachments/assets/ac0e657b-5987-4504-82e6-eae544db2466
