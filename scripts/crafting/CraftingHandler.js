@@ -2,7 +2,7 @@ import { LEVEL_BASED_DC, RARITY_ADJUSTMENT, PROFICENCIES, EI_TABLE, DEGREE_NAME,
 import { MODULE } from "../pf2e-downtime-scaling.js";
 
 export class CraftingHandler {
-    static defaultOptions = {
+    static defaultCraftingDialogOptions = {
         item: null,
         qty: 1,
         mult: null,
@@ -10,7 +10,7 @@ export class CraftingHandler {
     };
 
     static async openCraftingDialog(options = this.defaultOptions){
-        options = {...CraftingHandler.defaultOptions, ...options};
+        options = {...CraftingHandler.defaultCraftingDialogOptions, ...options};
         const actor = options.actor ? options.actor : (canvas.tokens.controlled[0]?.actor ?? game.user.character);
         if(!actor){
             ui.notifications.error(`Select at least one token before rolling, or assign a default character.`)
@@ -62,7 +62,14 @@ export class CraftingHandler {
         }
     }
 
-    static async craftItem(craftingData, options = {free: false, dos: null}){
+    static defaultCraftItemOptions = {
+        free: false,
+        dos: null
+    }
+    
+    static async craftItem(craftingData, options = defaultCraftItemOptions){
+        options = {...CraftingHandler.defaultCraftItemOptions, ...options};
+        
         if(!craftingData){
             ui.notifications.error("Crafting failed: input not found.");
             return;
