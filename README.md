@@ -6,6 +6,8 @@ This is a module for Foundry VTT's Pathfinder 2e system that provides a few enha
 
 **Magical Consumable Crafting.** When you successfully craft a wand or scroll, clicking the button in the chat card to add the items to your sheet will let you select the spell for the item you crafted. It'll then add that specific scroll or wand to your inventory, rather than a generic one.
 
+**Rerolls that Just Work™.** Gone are the days when you reroll an Earn Income roll, only to be sad when the results were nuked because you didn't reroll it the "right" way (ie, re-running the macro). Rerolling a check from the card will update the results message too, so you have all the information you need when you're done rolling another 2.
+
 **Macros.** Two new macros are provided in a compendium - one for Crafting, and one for Earn Income. These should be used in place of any other macro that comes with the system or other modules.
 
 **Craft with Other Skills.** Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
