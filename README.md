@@ -1,5 +1,7 @@
 # PF2e Downtime Enhancements
-This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhancements for Earn Income and Crafting downtime activities.
+This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhancements for the Earn Income and Crafting downtime activities. Keep reading for a full list of features.
+
+This module replaces the default behavior of the `CRAFT` buttons on a PC's sheet, rendering the system's base crafting implementation unusable from that location. If you need the system implementation of crafting for any reason, you can still access that through the system provided macros (`Craft: Crafting` can be found in the Action Macros folder, and `Earn Income` can be found in the PF2e Macros folder).
 
 ## Speed Multipliers
 Set multipliers for the daily rates for both Crafting and Earn Income downtime activities, to make those things go faster. Multipliers are set individually for each activity, and can be set to vary based on the proficiency level of the skill being used (so you could do something like Trained is x2, Expert is x3, etc). These multipliers are used as defaults for the appropriate actions, but can be overridden on a case by case basis.
