@@ -127,7 +127,7 @@ export class CraftingHandler {
         // Calculate Degree of Success
         let dos = options.dos ?? null;
         let craftingRollMsg;
-        if(!dos){
+        if(dos === null){
             // Do the Crafting Roll
             const craftingRoll = await actor.skills["crafting"].roll({
                 dc: craftingDc,
