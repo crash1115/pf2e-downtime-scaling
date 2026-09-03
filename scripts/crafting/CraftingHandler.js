@@ -62,7 +62,7 @@ export class CraftingHandler {
         }
     }
 
-    static async craftItem(craftingData, options = {free: false}){
+    static async craftItem(craftingData, options = {free: false, dos: null}){
         if(!craftingData){
             ui.notifications.error("Crafting failed: input not found.");
             return;
@@ -124,21 +124,25 @@ export class CraftingHandler {
         const itemRarity = item.system.traits.rarity || "common";
         const craftingDc = LEVEL_BASED_DC[itemLevel] + RARITY_ADJUSTMENT[itemRarity];
 
-        // Do the Crafting Roll
-        let craftingRollMsg;
-        const craftingRoll = await actor.skills["crafting"].roll({
-            dc: craftingDc,
-            action: "craft",
-            traits: ["downtime", "manipulate"],
-            callback: async (roll, outcome, message, event) => {
-                craftingRollMsg = message;
-            }
-        });
-
-        if(!craftingRoll) return;
-
         // Calculate Degree of Success
-        const dos = craftingRoll.degreeOfSuccess;
+        let dos = options.dos ?? null;
+        let craftingRollMsg;
+        if(!dos){
+            // Do the Crafting Roll
+            const craftingRoll = await actor.skills["crafting"].roll({
+                dc: craftingDc,
+                action: "craft",
+                traits: ["downtime", "manipulate"],
+                callback: async (roll, outcome, message, event) => {
+                    craftingRollMsg = message;
+                }
+            });
+
+            if(!craftingRoll) return;
+
+            // Calculate Degree of Success
+            dos = craftingRoll.degreeOfSuccess;
+        }
 
         // Calculate Costs
         const price = game.pf2e.Coins.fromPrice(item.price, qty);
@@ -181,7 +185,7 @@ export class CraftingHandler {
                             },
                             perDay: null
                         },
-                        "rollMsgId": craftingRollMsg.id
+                        "rollMsgId": craftingRollMsg?.id || null 
                     }
                 }
             });
@@ -235,7 +239,7 @@ export class CraftingHandler {
                         },
                         perDay: progressPerDay
                     },
-                    "rollMsgId": craftingRollMsg.id
+                    "rollMsgId": craftingRollMsg?.id || null
                 }
             }
         });
@@ -402,15 +406,23 @@ export class CraftingHandler {
     }
 
     static async createRerollChatMsg(oldMsgId, newRoll){
-        //TODO: actuall make this function make something pretty
-        const oldMsg = game.messages.get(oldMsgId)
+        const oldMsg = game.messages.get(oldMsgId);
         const context = oldMsg.flags[MODULE].context;
-        console.log(context);
-        await oldMsg.delete();
+        await oldMsg.delete();          
 
-        await ChatMessage.create({
-            content: JSON.stringify(context),
-            flavor: `<b>Crafting Results</b>`
-        });
+        const options = {
+            free: context.free,
+            dos: newRoll.degreeOfSuccess
+        };
+
+        const craftingData = {
+            item:await fromUuid(context.itemUuid),
+            qty: context.qty,
+            mult: context.mult,
+            actor: game.actors.get(context.actorId),
+            skill: context.skill
+        }
+
+        return await this.craftItem(craftingData, options);
     }
 }

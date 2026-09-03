@@ -129,7 +129,7 @@ Hooks.once("ready", () => {
         "Roll.prototype.toMessage",
         function (wrapped, ...args) {
             if (compareRolls(this, savedNewRoll)){
-                CraftingHandler.createRerollChatMsg(savedResultsMsgId, this)
+                CraftingHandler.createRerollChatMsg(savedResultsMsgId, this);
                 savedOldRoll = undefined;
                 savedNewRoll = undefined;
                 savedResultsMsgId = undefined;
@@ -148,14 +148,12 @@ Hooks.on("pf2e.reroll", (oldRoll, newRoll, resource, options) => {
 
 function compareRolls (rollA, rollB){
     if(!rollA || !rollB) return false
-    // copy a and b, but remove isReroll and isRerollable
-    let modA = JSON.parse(JSON.stringify(rollA));
+    const modA = JSON.parse(JSON.stringify(rollA));
     delete modA.isReroll;
     delete modA.isRerollable;
     const modB = JSON.parse(JSON.stringify(rollA));
     delete modB.isReroll;
     delete modB.isRerollable;
-
     const sameWithoutRerolls = JSON.stringify(modA) == JSON.stringify(modB);
     return sameWithoutRerolls;
 }
