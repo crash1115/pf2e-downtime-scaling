@@ -106,6 +106,32 @@ Hooks.on("renderChatMessageHTML", async (message, html, context) => {
 });
 
 
+/*
+    The next chunk of stuff is handling for rerolls, as described on Discord here:
+    https://discord.com/channels/880968862240239708/880969304365994034/1470057955918479513
+
+    When we roll a crafting check for the first time, we take a look at the roll's message, take its id, and save
+    that message id in a flag on our results cards. This ensures that we always know which results card is related
+    to which roll, in the event that there are multiple rolls with the same result in the chat log at the same time.
+
+    reRollFromMessage is wrapped first, where we take a look at the old roll's message. If its id matches the data
+        stored in a results message from this module, we save a copy the results message's id and the old roll.
+
+    pf2e.reroll is hooked next. Here, old roll and new roll exist simultaneously. We check the old roll to see if
+        it matches our saved one. If it does, we also save a copy of the new roll.
+
+    Roll.toMessage is wrapped last. This method's this is the new roll. We compare that one more time against our
+        saved copy of the new roll to verify this is the one we want. If it is, we delete our old results message
+        and build a new one. Then we unset our storage vars so we can do it again.
+
+    NOTE: The new roll data featured in pf2e.reroll is not yet tagged as being a reroll/not rerollable. It is so
+        tagged in Roll.toMessage. The compareRolls helper method compares equality of two roll objects after
+        removing those keys, so the stored copy of oldRoll and the one that appears in Roll.toMessage can be
+        correctly identified as the same roll.
+    
+    None of this work is done async, so there shouldn't be any race conditions. - CRA 03 SEP 26
+*/
+
 let savedOldRoll, savedNewRoll, savedResultsMsgId;
 
 Hooks.once("ready", () => {
