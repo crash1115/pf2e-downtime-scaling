@@ -46,7 +46,7 @@ export class CraftingHandler {
             input: createNumberInput({integer: false, min: 0, value: mult, name: "mult" })
         }));
 
-        const title = "Crafting (PF2e Downtime Tracker)";
+        const title = "Crafting (PF2e Downtime Enhancements)";
         const result = await foundry.applications.api.Dialog.input({
             window: { title },
             content
@@ -223,7 +223,7 @@ export class CraftingHandler {
             progressPerDay: progressPerDay.toString(),
             eiPerDay: coinsEiPerDay.toString(),
             days: daysToComplete,
-            trackerIntegration: game.settings.get(MODULE, "trackerIntegration")
+            trackerIntegration: game.settings.get(MODULE, "trackerIntegration") && game.settings.get("pf2e-downtime", "downtimeUnit").toLowerCase() === "day"
         });
 
         await ChatMessage.create({

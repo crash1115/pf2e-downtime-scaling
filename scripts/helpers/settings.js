@@ -75,7 +75,7 @@ export function registerSettings(){
 
     game.settings.register(MODULE, "trackerIntegration", {
         name: "Enable PF2e Downtime Tracker Integration",
-        hint: "If using PF2e Downtime Tracker module, will add an option to successful Craft check chat cards to create a tracked project in the Downtime tab of the PC's sheet.",
+        hint: "If you're using the PF2e Downtime Tracker module, and you have its Downtime Unit setting set to 'day' (case sensitive, not plural), this module will add an option to successful Craft check chat cards to create a tracked project in the Downtime tab of the PC's sheet.",
         scope: "world",
         config: true,
         default: false,
