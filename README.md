@@ -35,7 +35,7 @@ const options = {
     item: item,  // The item to craft
     qty: 4,  // The quantity you want to craft
     mult: 99,  // The speed multiplier for the crafting
-    free: false  // When true, no crafting check is made, and materials cost nothing,
+    free: false,  // When true, no crafting check is made, and materials cost nothing,
     dos: null // When set, skips the check and provides the given result. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
 }
 
@@ -47,8 +47,8 @@ Each key in `options` is optional. Not providing them will fall back to module d
 - `item` falls back to null, allowing user selection in the crafting window.
 - `qty` falls back to 1.
 - `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
-- `free` falls back to `false`, which means a cost w
-- `dos` falls back to `null`, which means a roll will be made
+- `free` falls back to `false`
+- `dos` falls back to `null`
 
 Not providing `options` at all, or providing an empty object, will use the defaults for everything:
 ```js
