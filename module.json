@@ -39,6 +39,18 @@
   "styles": [
         "./styles/pf2e-downtime-scaling.css"
   ],
+  "packs": [
+    {
+      "name": "pf2e-downtime-scaling",
+      "label": "PF2e Downtime Enhancements Macros",
+      "path": "packs/pf2e-downtime-scaling-macros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
   "flags": {
         "hotReload": {
             "extensions": [
