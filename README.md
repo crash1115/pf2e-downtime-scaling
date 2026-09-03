@@ -1,5 +1,5 @@
 # PF2e Downtime Enhancements
-This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhnacements for Earn Income and Crafting downtime activities.
+This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhancements for Earn Income and Crafting downtime activities.
 
 ## Features
 **Speed Multipliers.** Set multipliers for the daily rates for both Crafting and Earn Income downtime activities, to make those things go faster. Multipliers are set individually for each activity, and can be set to vary based on the proficiency level of the skill being used (so you could do something like Trained is x2, Expert is x3, etc). These multipliers are used as defaults for the appropriate actions, but can be overridden on a case by case basis.
@@ -8,9 +8,9 @@ This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhn
 
 **Macros.** Two new macros are provided in a compendium - one for Crafting, and one for Earn Income. These should be used in place of any other macro that comes with the system or other modules.
 
-**Craft with Other Skills.** Crafting from a PC's sheet or the inclued macro will provide an option to use a skill other than Crafting. [COMING SOON]
+**Craft with Other Skills.** Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
 
-**Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime).** A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "days", you'll see an option to pay the materials cost, spend downtime, and recieve the item. Regardless of your downtime unit settings, you'll see an option to create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
+**Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime).** A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "days", you'll see an option to pay the materials cost, spend downtime, and receive the item. Regardless of your downtime unit settings, you'll see an option to create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
 
 ## Module Compatibility
 Any module that replaces or makes changes to the crafting workflow will not benefit from the changes this module provides. This includes stuff like Heroic Crafting and the associated automation module.
@@ -35,7 +35,8 @@ const options = {
     item: item,  // The item to craft
     qty: 4,  // The quantity you want to craft
     mult: 99,  // The speed multiplier for the crafting
-    free: false  // When true, no crafting check is made, and materials cost nothing
+    free: false  // When true, no crafting check is made, and materials cost nothing,
+    dos: null // When set, skips the check and provides the given result. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
 }
 
 const api = game.modules.get('pf2e-downtime-scaling')?.api;
@@ -46,7 +47,8 @@ Each key in `options` is optional. Not providing them will fall back to module d
 - `item` falls back to null, allowing user selection in the crafting window.
 - `qty` falls back to 1.
 - `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
-- `free` falls back to `false`
+- `free` falls back to `false`, which means a cost w
+- `dos` falls back to `null`, which means a roll will be made
 
 Not providing `options` at all, or providing an empty object, will use the defaults for everything:
 ```js
