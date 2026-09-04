@@ -28,7 +28,7 @@ export class CraftingHandler {
 
         content.append(createFormGroup({
             label: "Quantity",  
-            input: createNumberInput({ integer: false,  min: 0, value: options.qty ?? 1, name: "qty" })
+            input: createNumberInput({ integer: true,  min: 0, value: options.qty ?? 1, name: "qty" })
         }));
 
 
