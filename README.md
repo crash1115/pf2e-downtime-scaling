@@ -6,7 +6,9 @@ This module is based on the default crafting rules presented in Player Core. The
 - Complex Crafting or Critical Crafting rules in Treasure Vault
 
 ### Default Behaviors
-This module replaces the default behavior of the `CRAFT` buttons on a PC's sheet, rendering the system's base crafting implementation unusable from that location. If you need the system implementation of crafting for any reason, you can still access that through the system provided macros (`Craft: Crafting` can be found in the Action Macros folder, and `Earn Income` can be found in the PF2e Macros folder).
+This module replaces the default behavior of the `CRAFT` buttons on a PC's sheet, rendering the system's base crafting implementation unusable from that location. (The Free Crafting toggle on the sheet is the exception; that toggle does work with this module.)
+
+If you need the system implementation of crafting for any reason, you can still access that through the system provided macros (`Craft: Crafting` can be found in the Action Macros folder, and `Earn Income` can be found in the PF2e Macros folder).
 
 ## Speed Multipliers
 Set multipliers for the daily rates for both Crafting and Earn Income downtime activities, to make those things go faster. Multipliers are set individually for each activity, and can be set to vary based on the proficiency level of the skill being used (so you could do something like Trained is x2, Expert is x3, etc). These multipliers are used as defaults for the appropriate actions, but can be overridden on a case by case basis.
@@ -14,7 +16,7 @@ Set multipliers for the daily rates for both Crafting and Earn Income downtime a
 <img width="1412" height="789" alt="image" src="https://github.com/user-attachments/assets/691bff58-46fa-48d1-8416-c9897bbfdc0d" />
 
 ## Magical Consumable Crafting
-When you successfully craft a wand or scroll, clicking the button in the chat card to add the items to your sheet will let you select the spell for the item you crafted. It'll then add that specific scroll or wand to your inventory, rather than a generic one.
+When you successfully craft a wand or scroll, clicking the button in the chat card to add the items to your sheet will let you select the spell for the item you crafted. It'll then add that specific scroll or wand to your inventory, rather than a generic one. The spell selection dropdown will include all spells of the appropriate rank or below, not just ones the actor knows or has access to, since it's always possible to get someone else to supply a casting of the spell for you.
 
 https://github.com/user-attachments/assets/ac0e657b-5987-4504-82e6-eae544db2466
 
@@ -24,7 +26,10 @@ Gone are the days when you reroll an Earn Income roll, only to be sad when the r
 https://github.com/user-attachments/assets/b58f1391-b6b3-4618-b991-2b1e7147b76e
 
 ## Craft with Other Skills
-Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
+Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. You can select any skill that the character is at least Trained in, including Lore skills. Crafting will always be selected by default, however.
+
+<img width="1460" height="762" alt="image" src="https://github.com/user-attachments/assets/173f2f87-3ac3-448f-8fe1-9ebe01a6dcf9" />
+
 
 ## Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime)
 A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "day", you'll see an option to spend the materials cost and create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
@@ -43,13 +48,19 @@ This module requires [libwrapper](https://foundryvtt.com/packages/lib-wrapper/).
 Because there isn't a good way to hook into the system's crafting code to modify how that works, this module is a ground-up rewrite of those features. As such, some things might be handled differently, poorly, or not at all.
 - Occasionally you'll get a very minor rounding error when looking at costs or earnings. This is due to how the system handles scaling currency; I can't do anything about this.
 
+## Installation
+This module is not available in the Foundry module browser. You can manually install it via the manifest link:
+- `https://github.com/crash1115/pf2e-downtime-scaling/releases/latest/download/module.json`
+
 ## API
 
+### Accessing the API
 Foundry recommends modules expose their API in a specific way, so I did that. You can access the API like so:
 ```js
 const api = game.modules.get('pf2e-downtime-scaling')?.api;
 ```
 
+### Crafting
 To craft an item using this module's code rather than the base system code:
 ```js
 const item = game.items.getName("Longsword");
@@ -59,7 +70,8 @@ const options = {
     item: item,  // The item to craft
     qty: 4,  // The quantity you want to craft
     mult: 99,  // The speed multiplier for the crafting
-    free: false,  // When true, no crafting check is made, and materials cost nothing,
+    skill: "crafting", // The slug of the skill to use for the crafting check
+    free: false,  // When true, no crafting check is made, and materials cost nothing
     dos: null // When set, skips the check and provides a result of the given Degree of Success. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
 }
 
@@ -68,14 +80,46 @@ await api.craft(options); // My Actor will craft 4 Longswords, with a speed mult
 ```
 Each key in `options` is optional. Not providing them will fall back to module defaults:
 - `actor` falls back to a selected token or assigned character, in that order.
-- `item` falls back to null, allowing user selection in the crafting window.
-- `qty` falls back to 1.
+- `item` falls back to `null`, allowing user selection in the crafting window.
+- `qty` falls back to `1`.
 - `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
+- `skill` falls back to `"crafting"`
 - `free` falls back to `false`
-- `dos` falls back to `null`
+- `dos` falls back to `null`, which means a roll will be made to determine Degree of Success
 
 Not providing `options` at all, or providing an empty object, will use the defaults for everything:
 ```js
 const api = game.modules.get('pf2e-downtime-scaling')?.api;
 await api.craft(); // Will open the crafting dialog with defaults selected
+```
+
+### Earning Income
+To do Earn Income using this module's code:
+```js
+const actor = game.actors.getName("My Actor");
+const options = {
+    actor: actor,  // The actor doing the crafting
+    days: 4,  // The number of days you're spending
+    level: 10, // The level of the task you're doing
+    skill: "crafting", // The slug of the skill to use for the check
+    mult: 2,  // The earnings multiplier for income
+    dos: null // When set, skips the check and provides a result of the given Degree of Success. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
+}
+
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+await api.earnIncome(options); // My Actor will spend 4 days performing a level 10 task using the crafting skill, and double their income.
+```
+
+Just like with crafting, each key in `options` is optional and has a fallback:
+- `actor` falls back to a selected token or assigned character, in that order.
+- `days` falls back to `null`, allowing the user to select a value in the dialog.
+- `level` falls back to the actor's level
+- `skill` falls back to the first value that appears in the skill selection dialog. The dialog pulls from all skills the actor has at least Trained proficiency in, and the initial selection of this dialog is the first skill in alphabetical order. This might be Athletics, or it might be Absalom Lore, depends on the actor.
+- `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
+- `dos` falls back to `null`, which means a roll will be made to determine Degree of Success
+
+Not providing `options` at all, or providing an empty object, will use the defaults for everything:
+```js
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+await api.earnIncome(); // Will open the dialog with defaults selected
 ```
