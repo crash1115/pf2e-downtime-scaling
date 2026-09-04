@@ -14,7 +14,7 @@ Set multipliers for the daily rates for both Crafting and Earn Income downtime a
 <img width="1412" height="789" alt="image" src="https://github.com/user-attachments/assets/691bff58-46fa-48d1-8416-c9897bbfdc0d" />
 
 ## Magical Consumable Crafting
-When you successfully craft a wand or scroll, clicking the button in the chat card to add the items to your sheet will let you select the spell for the item you crafted. It'll then add that specific scroll or wand to your inventory, rather than a generic one.
+When you successfully craft a wand or scroll, clicking the button in the chat card to add the items to your sheet will let you select the spell for the item you crafted. It'll then add that specific scroll or wand to your inventory, rather than a generic one. The spell selection dropdown will include all spells of the appropriate rank or below, not just ones the actor knows or has access to, since it's always possible to get someone else to supply a casting of the spell for you.
 
 https://github.com/user-attachments/assets/ac0e657b-5987-4504-82e6-eae544db2466
 
