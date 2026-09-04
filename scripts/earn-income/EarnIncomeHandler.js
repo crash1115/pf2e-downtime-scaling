@@ -107,7 +107,7 @@ export class EarnIncomeHandler {
             actor: actor
         }
     
-    } //end of method
+    }
 
     static defaultEiRollOptions = {
         dos: null
@@ -141,8 +141,9 @@ export class EarnIncomeHandler {
         if(dos === null){
             // Do the Roll
             const eiRoll = await actor.skills[skill].roll({
-                dc: dc,
-                traits: ["downtime", "action:earn-income"],
+                dc: {value: dc, visible: true},
+                traits: ["downtime"],
+                extraRollOptions: ["action:earn-income"],
                 callback: async (roll, outcome, message, event) => {
                     eiRollMsg = message;
                 }
@@ -152,6 +153,9 @@ export class EarnIncomeHandler {
 
             // Calculate Degree of Success
             dos = eiRoll.degreeOfSuccess;
+
+            //TODO: Update dos if actor has Experienced Professional feat
+
         };
 
         // Calculate Earnings Per Day
