@@ -10,7 +10,7 @@ export class EarnIncomeHandler {
         mult: null,
     };
 
-    static async openEiDialog(options = this.defaultOptions) {
+    static async openEiDialog(options = EarnIncomeHandler.defaultEiDialogOptions) {
         options = { ...EarnIncomeHandler.defaultEiDialogOptions, ...options };
         const actor = options.actor ? options.actor : (canvas.tokens.controlled[0]?.actor ?? game.user.character);
         if (!actor) {
@@ -113,7 +113,7 @@ export class EarnIncomeHandler {
         dos: null
     };
 
-    static async rollEi(eiData, options = defaultEiRollOptions){
+    static async rollEi(eiData, options = EarnIncomeHandler.defaultEiRollOptions){
         options = {...EarnIncomeHandler.defaultEiRollOptions, ...options};
             
         if(!eiData){
