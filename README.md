@@ -24,7 +24,10 @@ Gone are the days when you reroll an Earn Income roll, only to be sad when the r
 https://github.com/user-attachments/assets/b58f1391-b6b3-4618-b991-2b1e7147b76e
 
 ## Craft with Other Skills
-Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. [COMING SOON]
+Crafting from a PC's sheet or the included macro will provide an option to use a skill other than Crafting. You can select any skill that the character is at least Trained in, including Lore skills. Crafting will always be selected by default, however.
+
+<img width="1460" height="762" alt="image" src="https://github.com/user-attachments/assets/173f2f87-3ac3-448f-8fe1-9ebe01a6dcf9" />
+
 
 ## Integration with [PF2e Downtime Tracking](https://github.com/crash1115/pf2e-downtime)
 A successful Crafting check will provide options that tie into PF2e Downtime Tracking's features. If your downtime unit is set to "day", you'll see an option to spend the materials cost and create a tracked activity, so you can easily keep track of long term crafting projects you can't finish in one chunk of downtime.
