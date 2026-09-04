@@ -1,5 +1,6 @@
 import { PF2EDowntimeScalingApi } from "./api/public.js";
 import { CraftingHandler } from "./crafting/CraftingHandler.js";
+import { EarnIncomeHandler } from "./earn-income/EarnIncomeHandler.js";
 import { registerSettings } from "./helpers/settings.js"
 
 export const MODULE = "pf2e-downtime-scaling";
@@ -48,59 +49,78 @@ Hooks.on("renderCharacterSheetPF2e", async (data, html) => {
 
 Hooks.on("renderChatMessageHTML", async (message, html, context) => {
     if(message.flags[MODULE]){
-        const craftingData = message.flags[MODULE].context;
-        const cost = craftingData.cost;
-        const actor = await game.actors.get(craftingData.actorId);
-        const item = await fromUuid(craftingData.itemUuid);
-        
-        const payTenthBtn = html.querySelector("button[data-action=pay-tenth]");
-        if(payTenthBtn){
-            payTenthBtn.addEventListener("click", async () => {
-                const owed = cost.tenth;
-                const payment = await CraftingHandler.payCost(actor, owed);
-                return payment;
-            })
+
+        if(message.flags[MODULE].type==="crafting"){
+            const craftingData = message.flags[MODULE].context;
+            const cost = craftingData.cost;
+            const actor = await game.actors.get(craftingData.actorId);
+            const item = await fromUuid(craftingData.itemUuid);
+            
+            const payTenthBtn = html.querySelector("button[data-action=pay-tenth]");
+            if(payTenthBtn){
+                payTenthBtn.addEventListener("click", async () => {
+                    const owed = cost.tenth;
+                    const payment = await CraftingHandler.payCost(actor, owed);
+                    return payment;
+                })
+            }
+
+            const payFullBtn = html.querySelector("button[data-action=pay-full]");
+            if(payFullBtn){
+                payFullBtn.addEventListener("click", async () => {
+                    const owed = cost.full;
+                    const payment = await CraftingHandler.payCost(actor, owed);
+                    if(!payment) return;
+                    const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
+                    return given;
+                })
+            }
+            
+            const payHalfBtn = html.querySelector("button[data-action=pay-half]");
+            if(payHalfBtn){
+                payHalfBtn.addEventListener("click", async () => {
+                    const owed = cost.half;
+                    const payment = await CraftingHandler.payCost(actor, owed);
+                    if(!payment) return;
+                    const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
+                    return given;
+                })
+            }
+
+            const createProjectBtn = html.querySelector("button[data-action=create-project]");
+            if(createProjectBtn){
+                createProjectBtn.addEventListener("click", async () => {
+                    const owed = cost.half;
+                    const payment = await CraftingHandler.payCost(actor, owed);
+                    if(!payment) return;
+                    const project = await CraftingHandler.createDowntimeProject(craftingData);
+                    return project;
+                })
+            }
+            
+            const getItemsBtn = html.querySelector("button[data-action=get-items]");
+            if(getItemsBtn){
+                getItemsBtn.addEventListener("click", async () => {
+                    const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
+                    return given;
+                })
+            }
         }
 
-        const payFullBtn = html.querySelector("button[data-action=pay-full]");
-        if(payFullBtn){
-            payFullBtn.addEventListener("click", async () => {
-                const owed = cost.full;
-                const payment = await CraftingHandler.payCost(actor, owed);
-                if(!payment) return;
-                const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
-                return given;
-            })
-        }
-        
-        const payHalfBtn = html.querySelector("button[data-action=pay-half]");
-        if(payHalfBtn){
-            payHalfBtn.addEventListener("click", async () => {
-                const owed = cost.half;
-                const payment = await CraftingHandler.payCost(actor, owed);
-                if(!payment) return;
-                const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
-                return given;
-            })
-        }
 
-        const createProjectBtn = html.querySelector("button[data-action=create-project]");
-        if(createProjectBtn){
-            createProjectBtn.addEventListener("click", async () => {
-                const owed = cost.half;
-                const payment = await CraftingHandler.payCost(actor, owed);
-                if(!payment) return;
-                const project = await CraftingHandler.createDowntimeProject(craftingData);
-                return project;
-            })
-        }
-        
-        const getItemsBtn = html.querySelector("button[data-action=get-items]");
-        if(getItemsBtn){
-            getItemsBtn.addEventListener("click", async () => {
-                const given = await CraftingHandler.giveItem(actor, item, craftingData.qty)
-                return given;
-            })
+        if(message.flags[MODULE].type==="earnIncome"){
+            const eiData = message.flags[MODULE].context;
+            const actor = await game.actors.get(eiData.actorId);
+            const wages = eiData.wages;
+
+            const getPaidBtn = html.querySelector("button[data-action=get-paid");
+            if(getPaidBtn){
+                getPaidBtn.addEventListener("click", async () => {
+                    const owed = wages;
+                    const paid = await EarnIncomeHandler.payWages(actor, owed);
+                    return paid;
+                })
+            }
         }
     }
 });

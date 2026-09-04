@@ -105,6 +105,7 @@ export class CraftingHandler {
                 speaker: ChatMessage.implementation.getSpeaker({ actor }),
                 flags: {
                     "pf2e-downtime-scaling": {
+                        "type": "crafting",
                         "context": { 
                             itemUuid: item.uuid,
                             qty: qty,
@@ -183,6 +184,7 @@ export class CraftingHandler {
                 speaker: ChatMessage.implementation.getSpeaker({ actor }),
                 flags: {
                     "pf2e-downtime-scaling": {
+                        "type": "crafting",
                         "context": { 
                             itemUuid: item.uuid,
                             qty: qty,
@@ -237,6 +239,7 @@ export class CraftingHandler {
             speaker: ChatMessage.implementation.getSpeaker({ actor }),
             flags: {
                 "pf2e-downtime-scaling": {
+                    "type": "crafting",
                     "context": { 
                         itemUuid: item.uuid,
                         qty: qty,

@@ -185,17 +185,36 @@ export class EarnIncomeHandler {
             speaker: ChatMessage.implementation.getSpeaker({ actor }),
             flags: {
                 "pf2e-downtime-scaling": {
+                    "type": "earnIncome",
                     "context": { 
                         skill: skill,
                         mult: mult,
                         days: days,
                         actorId: actor.id,
-                        level: level
+                        level: level,
+                        wages: coinsTotal
                     },
                     "rollMsgId": eiRollMsg?.id || null
                 }
             }
         });
     };
+
+    static async payWages(actor, coins){
+        const oldCurrency = actor.inventory.coins.toString();
+        const owed = new game.pf2e.Coins(coins).normalized();
+        const payment = await actor.inventory.addCurrency(owed);   
+        // Right now addCurrency doesn't return anything
+        // Look at this again if the issue is resolved: https://github.com/foundryvtt/pf2e/issues/23141
+        // if(!payment){
+        //     ui.notifications.error(`Payment Incomplete: Couldn't pay ${actor.name} , something went wrong.`);
+        //     return false;
+        // } else {
+        //     ui.notifications.success(`Payment Complete: ${owed.toString()} given to ${actor.name}.`);
+        //     return true;
+        // }
+        ui.notifications.warn(`Payment: Check ${actor.name}'s inventory to verify funds were added. Used to have ${oldCurrency}.`, {permanent: true});
+    }
+
 }
 
