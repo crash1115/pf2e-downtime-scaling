@@ -1,7 +1,9 @@
 # PF2e Downtime Enhancements
 This is a module for Foundry VTT's Pathfinder 2e system that provides a few enhancements for the Earn Income and Crafting downtime activities. Keep reading for a full list of features.
 
-This module is based on the default crafting rules presented in Player Core. There's no additional support here for the Complex Crafting or Critical Crafting rules in Treasure Vault.
+This module is based on the default crafting rules presented in Player Core. There's no additional support here for the following:
+- Proficiency Without Level
+- Complex Crafting or Critical Crafting rules in Treasure Vault
 
 ### Default Behaviors
 This module replaces the default behavior of the `CRAFT` buttons on a PC's sheet, rendering the system's base crafting implementation unusable from that location. If you need the system implementation of crafting for any reason, you can still access that through the system provided macros (`Craft: Crafting` can be found in the Action Macros folder, and `Earn Income` can be found in the PF2e Macros folder).
