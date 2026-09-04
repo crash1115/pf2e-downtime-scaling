@@ -29,7 +29,7 @@ export class EarnIncomeHandler {
                 options: skillOptions,
                 name: "skill",
                 value: options.skill ?? null,
-                sort: true,
+                sort: false,
             }),
             }),
         );
@@ -60,7 +60,8 @@ export class EarnIncomeHandler {
             }),
         );
 
-        const profRank = actor.skills[options.skill].data.rank;
+        const firstSkill = skillOptions[0].value;
+        const profRank = actor.skills[options.skill ?? firstSkill].data.rank;
         const profMults = {
             "0": 1,
             "1": game.settings.get(MODULE, "eiMultTrained"),
