@@ -1,0 +1,19 @@
+<div class="pf2e-downtime-scaling-chat-card">
+  <div class="pf2e-downtime-scaling-chat-card-content">
+    <p>
+      <strong>{{dos}}</strong> {{dosText}}
+    </p>
+    {{#unless critFail}}
+    <hr>
+    <p><strong>Task Level</strong> {{level}}</p>
+    <p><strong>Days Spent</strong> {{days}}</p>
+    <hr>
+    <p><strong>Earnings Multiplier</strong> {{mult}}x</p>
+    <p><strong>Earnings Per Day</strong> {{earnings.perDay}} <span style="opacity:50%">({{earnings.basePerDay}} x {{mult}})</span></p>
+    <p><strong>Total Earnings</strong> {{earnings.total}}</p>
+    <hr>
+    <button style="width:100%; margin-bottom: 3px;" data-action="get-paid">Collect Income</button>
+    {{/unless}}
+  </div>
+</div>
+
