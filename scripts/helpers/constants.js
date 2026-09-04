@@ -43,6 +43,13 @@ export const CRAFTING_DOS_TEXT = {
     "3":"Your attempt is successful. Each additional day spent Crafting reduces the materials needed to complete the item by an amount based on your level + 1 and your proficiency rank in Crafting."
 }
 
+export const EI_DOS_TEXT = {
+    "0":"You earn nothing for your work and are fired immediately. You can't continue at the task. Your reputation suffers, potentially making it difficult for you to find rewarding jobs in that community in the future.", 
+    "1":"You do shoddy work and get paid the bare minimum for your time. Gain the amount of currency listed in the failure column for the task level. The GM will likely reduce how long you can continue at the task.", 
+    "2":"You do competent work. Gain the amount of currency listed for the task level and your proficiency rank.",
+    "3":"You do outstanding work. Gain the amount of currency listed for the task level + 1 and your proficiency rank."
+}
+
 export const SPELL_CONSUMABLES = {
     "Compendium.pf2e.equipment-srd.Item.RjuupS9xyXDLgyIr": {"type": "scroll", "rank": 1},
     "Compendium.pf2e.equipment-srd.Item.Y7UD64foDbDMV9sx": {"type": "scroll", "rank": 2},
