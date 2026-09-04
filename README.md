@@ -45,11 +45,13 @@ Because there isn't a good way to hook into the system's crafting code to modify
 
 ## API
 
+### Accessing the API
 Foundry recommends modules expose their API in a specific way, so I did that. You can access the API like so:
 ```js
 const api = game.modules.get('pf2e-downtime-scaling')?.api;
 ```
 
+### Crafting
 To craft an item using this module's code rather than the base system code:
 ```js
 const item = game.items.getName("Longsword");
@@ -59,7 +61,8 @@ const options = {
     item: item,  // The item to craft
     qty: 4,  // The quantity you want to craft
     mult: 99,  // The speed multiplier for the crafting
-    free: false,  // When true, no crafting check is made, and materials cost nothing,
+    skill: "crafting", // The slug of the skill to use for the crafting check
+    free: false,  // When true, no crafting check is made, and materials cost nothing
     dos: null // When set, skips the check and provides a result of the given Degree of Success. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
 }
 
@@ -68,14 +71,46 @@ await api.craft(options); // My Actor will craft 4 Longswords, with a speed mult
 ```
 Each key in `options` is optional. Not providing them will fall back to module defaults:
 - `actor` falls back to a selected token or assigned character, in that order.
-- `item` falls back to null, allowing user selection in the crafting window.
-- `qty` falls back to 1.
+- `item` falls back to `null`, allowing user selection in the crafting window.
+- `qty` falls back to `1`.
 - `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
+- `skill` falls back to `"crafting"`
 - `free` falls back to `false`
-- `dos` falls back to `null`
+- `dos` falls back to `null`, which means a roll will be made to determine Degree of Success
 
 Not providing `options` at all, or providing an empty object, will use the defaults for everything:
 ```js
 const api = game.modules.get('pf2e-downtime-scaling')?.api;
 await api.craft(); // Will open the crafting dialog with defaults selected
+```
+
+### Earning Income
+To do Earn Income using this module's code:
+```js
+const actor = game.actors.getName("My Actor");
+const options = {
+    actor: actor,  // The actor doing the crafting
+    days: 4,  // The number of days you're spending
+    level: 10, // The level of the task you're doing
+    skill: "crafting", // The slug of the skill to use for the check
+    mult: 2,  // The earnings multiplier for income
+    dos: null // When set, skips the check and provides a result of the given Degree of Success. Can be 0, 1, 2, or 3 for Critical Failure, Failure, Success, or Critical Success respectively
+}
+
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+await api.earnIncome(options); // My Actor will spend 4 days performing a level 10 task using the crafting skill, and double their income.
+```
+
+Just like with crafting, each key in `options` is optional and has a fallback:
+- `actor` falls back to a selected token or assigned character, in that order.
+- `days` falls back to `null`, allowing the user to select a value in the dialog.
+- `level` falls back to the actor's level
+- - `skill` falls back to the first value that appears in the skill selection dialog. The dialog pulls from all skills the actor has at least Trained proficiency in, and the initial selection of this dialog is the first skill in alphabetical order. This might be Athletics, or it might be Absalom Lore, depends on the actor.
+- `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
+- `dos` falls back to `null`, which means a roll will be made to determine Degree of Success
+
+Not providing `options` at all, or providing an empty object, will use the defaults for everything:
+```js
+const api = game.modules.get('pf2e-downtime-scaling')?.api;
+await api.earnIncome(); // Will open the dialog with defaults selected
 ```
