@@ -60,7 +60,7 @@ export class EarnIncomeHandler {
             }),
         );
 
-        const profRank = actor.skills["athletics"].data.rank;
+        const profRank = actor.skills[options.skill].data.rank;
         const profMults = {
             "0": 1,
             "1": game.settings.get(MODULE, "eiMultTrained"),
@@ -72,12 +72,7 @@ export class EarnIncomeHandler {
         content.append(
             createFormGroup({
                 label: "Earnings Multiplier",
-                input: createNumberInput({
-                    integer: false,
-                    min: 0,
-                    value: mult,
-                    name: "mult",
-                }),
+                input: createNumberInput({integer: false, min: 0, value: mult, name: "mult" }),
             }),
         );
 
@@ -153,9 +148,6 @@ export class EarnIncomeHandler {
 
             // Calculate Degree of Success
             dos = eiRoll.degreeOfSuccess;
-
-            //TODO: Update dos if actor has Experienced Professional feat
-
         };
 
         // Calculate Earnings Per Day

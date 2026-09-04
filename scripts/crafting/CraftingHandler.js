@@ -6,7 +6,8 @@ export class CraftingHandler {
         item: null,
         qty: 1,
         mult: null,
-        actor: null
+        actor: null,
+        skill: "crafting"
     };
 
     static async openCraftingDialog(options = this.defaultOptions){
@@ -18,7 +19,7 @@ export class CraftingHandler {
         }
 
         const {HTMLDocumentTagsElement} = foundry.applications.elements;
-        const {createFormGroup, createNumberInput} = foundry.applications.fields;
+        const {createFormGroup, createNumberInput, createSelectInput} = foundry.applications.fields;
         const content = document.createElement("div");
 
         content.append(createFormGroup({
@@ -31,8 +32,16 @@ export class CraftingHandler {
             input: createNumberInput({ integer: true,  min: 0, value: options.qty ?? 1, name: "qty" })
         }));
 
+        const skillOptions = Object.values(actor.skills).filter((s) => s.proficient).map((s) => ({ value: s.slug, label: s.label }));
+        content.append(
+            createFormGroup({
+            label: "Select Skill",
+            input: createSelectInput({
+                options: skillOptions, name: "skill", value: options.skill ?? null, sort: true }),
+            }),
+        );
 
-        const profRank = actor.skills["crafting"].data.rank;
+        const profRank = actor.skills[options.skill].data.rank;
         const profMults = {
             "0": 1,
             "1": game.settings.get(MODULE, "craftingMultTrained"),
@@ -49,6 +58,16 @@ export class CraftingHandler {
         const title = "Crafting (PF2e Downtime Enhancements)";
         const result = await foundry.applications.api.Dialog.input({
             window: { title },
+            render: (_event, dialog) => {
+                const skillInput = dialog.element.querySelector('select[name="skill"]');
+                skillInput.addEventListener("change", (e) => {
+                    const newSkill = e.currentTarget.value;
+                    const newProfRank = actor.skills[newSkill].data.rank;
+                    const newMult = profMults[newProfRank];
+                    const multInput = dialog.element.querySelector('input[name="mult"');
+                    multInput.value = newMult;
+                });
+            },
             content
         });
 
@@ -58,7 +77,8 @@ export class CraftingHandler {
             item: await fromUuid(result.item),
             qty: result.qty,
             mult: result.mult,
-            actor: actor
+            actor: actor,
+            skill: result.skill
         }
     }
 
@@ -79,6 +99,7 @@ export class CraftingHandler {
         const qty = craftingData.qty;
         const mult = craftingData.mult;
         const actor = craftingData.actor;
+        const skill = craftingData.skill;
 
         if(!(item && qty && mult && actor)){
             ui.notifications.error("Crafting failed: input data malformed.");
@@ -111,7 +132,7 @@ export class CraftingHandler {
                             qty: qty,
                             mult: mult,
                             actorId: actor.id,
-                            skill: "crafting",
+                            skill: skill,
                             free: options.free,
                             cost: {
                                 full: null,
@@ -137,8 +158,7 @@ export class CraftingHandler {
         let craftingRollMsg;
         if(dos === null){
             // Do the Crafting Roll
-
-            const craftingRoll = await actor.skills["crafting"].roll({
+            const craftingRoll = await actor.skills[skill].roll({
                 dc: {value: craftingDc, visible: true},
                 traits: ["downtime", "manipulate"],
                 extraRollOptions: ["action:craft"],
@@ -187,7 +207,7 @@ export class CraftingHandler {
                             qty: qty,
                             mult: mult,
                             actorId: actor.id,
-                            skill: "crafting",
+                            skill: skill,
                             free: options.free,
                             cost: {
                                 full: price,
@@ -204,7 +224,7 @@ export class CraftingHandler {
         };
 
         // Calculate Progress Per Day
-        const craftingProf = PROFICENCIES[actor.skills["crafting"].data.rank];
+        const craftingProf = PROFICENCIES[actor.skills[skill].data.rank];
         const eiPerDay = dos === 3 ? EI_TABLE[actor.level + 1][craftingProf] : EI_TABLE[actor.level][craftingProf];
         const coinsEiPerDay = new game.pf2e.Coins(eiPerDay);
         const progressPerDay = coinsEiPerDay.scale(mult);
@@ -242,7 +262,7 @@ export class CraftingHandler {
                         qty: qty,
                         mult: mult,
                         actorId: actor.id,
-                        skill: "crafting",
+                        skill: skill,
                         free: options.free,
                         cost: {
                             full: price,
