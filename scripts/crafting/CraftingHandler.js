@@ -138,13 +138,10 @@ export class CraftingHandler {
         if(dos === null){
             // Do the Crafting Roll
 
-            const craftingRoll = actor.skills["crafting"].extend({
-                rollOptions: [`action:craft`]
-            });
-            
-            await craftingRoll.roll({
-                dc: craftingDc,
+            const craftingRoll = await actor.skills["crafting"].roll({
+                dc: {value: craftingDc, visible: true},
                 traits: ["downtime", "manipulate"],
+                extraRollOptions: ["action:craft"],
                 callback: async (roll, outcome, message, event) => {
                     craftingRollMsg = message;
                 },
