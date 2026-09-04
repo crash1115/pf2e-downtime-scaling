@@ -48,6 +48,10 @@ This module requires [libwrapper](https://foundryvtt.com/packages/lib-wrapper/).
 Because there isn't a good way to hook into the system's crafting code to modify how that works, this module is a ground-up rewrite of those features. As such, some things might be handled differently, poorly, or not at all.
 - Occasionally you'll get a very minor rounding error when looking at costs or earnings. This is due to how the system handles scaling currency; I can't do anything about this.
 
+## Installation
+This module is not available in the Foundry module browser. You can manually install it via the manifest link:
+- `https://github.com/crash1115/pf2e-downtime-scaling/releases/latest/download/module.json`
+
 ## API
 
 ### Accessing the API
