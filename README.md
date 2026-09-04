@@ -114,7 +114,7 @@ Just like with crafting, each key in `options` is optional and has a fallback:
 - `actor` falls back to a selected token or assigned character, in that order.
 - `days` falls back to `null`, allowing the user to select a value in the dialog.
 - `level` falls back to the actor's level
-- - `skill` falls back to the first value that appears in the skill selection dialog. The dialog pulls from all skills the actor has at least Trained proficiency in, and the initial selection of this dialog is the first skill in alphabetical order. This might be Athletics, or it might be Absalom Lore, depends on the actor.
+- `skill` falls back to the first value that appears in the skill selection dialog. The dialog pulls from all skills the actor has at least Trained proficiency in, and the initial selection of this dialog is the first skill in alphabetical order. This might be Athletics, or it might be Absalom Lore, depends on the actor.
 - `mult`'s fallback will be determined based on the module's settings and the actor's proficiency.
 - `dos` falls back to `null`, which means a roll will be made to determine Degree of Success
 
