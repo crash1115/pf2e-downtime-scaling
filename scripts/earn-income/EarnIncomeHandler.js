@@ -216,5 +216,25 @@ export class EarnIncomeHandler {
         ui.notifications.warn(`Payment: Check ${actor.name}'s inventory to verify funds were added. Used to have ${oldCurrency}.`, {permanent: true});
     }
 
+    static async createRerollChatMsg(oldMsgId, newRoll){
+        const oldMsg = game.messages.get(oldMsgId);
+        const context = oldMsg.flags[MODULE].context;
+        await oldMsg.delete();          
+
+        const options = {
+            dos: newRoll.degreeOfSuccess
+        };
+
+        const eiData = {
+            skill: context.skill,
+            mult: context.mult,
+            days: context.days,
+            actor: game.actors.get(context.actorId),
+            level: context.level
+        }
+
+        return await this.rollEi(eiData, options);
+    }
+
 }
 

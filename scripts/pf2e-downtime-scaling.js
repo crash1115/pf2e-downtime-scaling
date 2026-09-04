@@ -152,7 +152,7 @@ Hooks.on("renderChatMessageHTML", async (message, html, context) => {
     None of this work is done async, so there shouldn't be any race conditions. - CRA 03 SEP 26
 */
 
-let savedOldRoll, savedNewRoll, savedResultsMsgId;
+let savedOldRoll, savedNewRoll, savedResultsMsgId, savedResultsType;
 
 Hooks.once("ready", () => {
     libWrapper.register(
@@ -160,10 +160,11 @@ Hooks.once("ready", () => {
         "game.pf2e.Check.rerollFromMessage",
         function (wrapped, ...args) {
             const message = args[0];
-            const craftingMsgs = game.messages.filter(m => m.flags[MODULE]?.rollMsgId === message.id);
-            if(craftingMsgs.length > 0){
+            const matchingMsgs = game.messages.filter(m => m.flags[MODULE]?.rollMsgId === message.id);
+            if(matchingMsgs.length > 0){
                 savedOldRoll = foundry.utils.deepClone(message.rolls[0]);
-                savedResultsMsgId = craftingMsgs[0].id;
+                savedResultsMsgId = matchingMsgs[0].id;
+                savedResultsType = matchingMsgs[0].flags[MODULE].type
             }
             return wrapped(...args);
         },
@@ -175,7 +176,11 @@ Hooks.once("ready", () => {
         "Roll.prototype.toMessage",
         function (wrapped, ...args) {
             if (compareRolls(this, savedNewRoll)){
-                CraftingHandler.createRerollChatMsg(savedResultsMsgId, this);
+                if ( savedResultsType === "crafting"){
+                    CraftingHandler.createRerollChatMsg(savedResultsMsgId, this);
+                } else if (savedResultsType === "earnIncome"){
+                    EarnIncomeHandler.createRerollChatMsg(savedResultsMsgId, this);
+                }
                 savedOldRoll = undefined;
                 savedNewRoll = undefined;
                 savedResultsMsgId = undefined;
