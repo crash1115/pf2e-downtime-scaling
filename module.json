@@ -2,8 +2,8 @@
   "id": "pf2e-downtime-scaling",
   "title": "PF2e Downtime Enhancements",
   "description": "Improvements for crafting and earn income. Add multipliers for the speed of crafting or results of earn income. An improved crafting workflow that handles magical consumables like scrolls and allows crafting with other skills. Rerolls that work as you expect and update the results messages. Integration with PF2e Downtime Tracking to keep track of longer crafting projects.",
-  "version": "0.14.2",
-  "download": "https://github.com/crash1115/pf2e-downtime-scaling/releases/download/0.14.2/module.zip",
+  "version": "0.14.3",
+  "download": "https://github.com/crash1115/pf2e-downtime-scaling/releases/download/0.14.3/module.zip",
   "manifest": "https://github.com/crash1115/pf2e-downtime-scaling/releases/latest/download/module.json",
   "url": "https://github.com/crash1115/pf2e-downtime",
   "compatibility": {
